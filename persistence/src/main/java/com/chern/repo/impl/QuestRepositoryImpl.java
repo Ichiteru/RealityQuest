@@ -4,6 +4,7 @@ import com.chern.mapper.QuestRowMapper;
 import com.chern.model.Quest;
 import com.chern.repo.QuestRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -26,8 +27,10 @@ public class QuestRepositoryImpl implements QuestRepository {
     }
 
     @Override
-    public Quest getById(long id) {
-        return jdbcTemplate.queryForObject("select * from quest where id=?", new Object[]{id}, new QuestRowMapper());
+    public Quest getById(long id) throws EmptyResultDataAccessException {
+        String query = "select * from quest where id=?";
+        Quest quest = jdbcTemplate.queryForObject(query, new Object[]{id}, new QuestRowMapper());
+        return quest;
     }
 
     @Override

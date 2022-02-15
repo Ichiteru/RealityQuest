@@ -2,10 +2,8 @@ package com.chern.controller;
 
 import com.chern.model.Quest;
 import com.chern.service.QuestService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,14 +18,26 @@ public class QuestController {
     }
 
     @GetMapping(value = "/quest/{id}")
-    public Quest getById(@PathVariable long id){
-        Quest quest = questService.getById(id);
-        System.out.println(quest);
-        return quest;
+    public ResponseEntity getById(@PathVariable long id){
+        if (id < 0){
+            return ResponseEntity.badRequest().body("Incorrect request(id should be more than -1)");
+        }
+        return questService.getById(id);
     }
 
     @GetMapping(value = "/quests")
     public List<Quest> getAll(){
         return questService.getAll();
+    }
+
+    @DeleteMapping(value = "/quest/{id}")
+    public ResponseEntity deleteById(@PathVariable long id){
+        return null;
+    }
+
+    @PostMapping(value = "/quest")
+    public ResponseEntity save(@RequestBody Quest quest){
+        questService.save(quest);
+        return null;
     }
 }

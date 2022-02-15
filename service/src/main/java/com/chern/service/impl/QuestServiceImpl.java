@@ -4,6 +4,8 @@ import com.chern.model.Quest;
 import com.chern.repo.QuestRepository;
 import com.chern.service.QuestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +25,12 @@ public class QuestServiceImpl implements QuestService {
     }
 
     @Override
-    public Quest getById(long id) {
-        return questRepository.getById(id);
+    public ResponseEntity getById(long id) {
+        try {
+            return ResponseEntity.ok().body(questRepository.getById(id));
+        } catch (EmptyResultDataAccessException ex){
+            return ResponseEntity.badRequest().body("Requested quest does not exist");
+        }
     }
 
     @Override
