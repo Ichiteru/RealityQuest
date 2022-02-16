@@ -1,7 +1,6 @@
 package com.chern.repo;
 
 import com.chern.model.Quest;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

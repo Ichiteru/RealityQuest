@@ -16,7 +16,6 @@
     <modules>
         <module>web</module>
         <module>persistence</module>
-        <module>model</module>
         <module>service</module>
     </modules>
 

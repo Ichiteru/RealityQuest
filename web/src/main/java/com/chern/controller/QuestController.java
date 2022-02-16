@@ -25,19 +25,19 @@ public class QuestController {
         return questService.getById(id);
     }
 
-    @GetMapping(value = "/quests")
-    public List<Quest> getAll(){
-        return questService.getAll();
-    }
-
-    @DeleteMapping(value = "/quest/{id}")
-    public ResponseEntity deleteById(@PathVariable long id){
-        return null;
-    }
-
-    @PostMapping(value = "/quest")
-    public ResponseEntity save(@RequestBody Quest quest){
-        questService.save(quest);
-        return null;
-    }
+//    @GetMapping(value = "/quests")
+//    public List<Quest> getAll(){
+//        return questService.getAll();
+//    }
+//
+//    @DeleteMapping(value = "/quest/{id}")
+//    public ResponseEntity deleteById(@PathVariable long id){
+//        return null;
+//    }
+//
+//    @PostMapping(value = "/quest")
+//    public ResponseEntity save(@RequestBody Quest quest){
+//        questService.save(quest);
+//        return null;
+//    }
 }

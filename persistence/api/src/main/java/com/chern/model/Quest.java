@@ -1,8 +1,5 @@
 package com.chern.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
