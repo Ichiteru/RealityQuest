@@ -1,56 +1,34 @@
-package com.chern.repo.pool;
+package com.chern.pool;
 
-import java.sql.Connection;
-import java.sql.Driver;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import javax.sql.DataSource;
+import java.io.PrintWriter;
+import java.sql.*;
 import java.util.Enumeration;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Logger;
 
+public class ConnectionPool implements DataSource, AutoCloseable{
 
-public class ConnectionPool {
-
-    private static final AtomicBoolean instanceCreated = new AtomicBoolean(false);
-    private static final Lock lock = new ReentrantLock(true);
-    private static final int INITIAL_POOL_SIZE = 10;
-
-    private static ConnectionPool instance = null;
-
+    private final int initialPoolSize;
     private final LinkedBlockingQueue<ProxyConnection> freeConnections;
     private final LinkedBlockingQueue<ProxyConnection> busyConnections;
 
-    private ConnectionPool() {
-        freeConnections = new LinkedBlockingQueue<>(INITIAL_POOL_SIZE);
-        busyConnections = new LinkedBlockingQueue<>(INITIAL_POOL_SIZE);
-        ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
+    public ConnectionPool(DriverManagerDataSource connectionFactory, int initialPoolSize) {
+        this.initialPoolSize = initialPoolSize;
+        freeConnections = new LinkedBlockingQueue<>(this.initialPoolSize);
+        busyConnections = new LinkedBlockingQueue<>(this.initialPoolSize);
         try {
-            for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
-                freeConnections.offer((ProxyConnection) connectionFactory.getConnection());
+            for (int i = 0; i < this.initialPoolSize; i++) {
+                freeConnections.offer(new ProxyConnection(connectionFactory.getConnection(), this));
             }
             if (freeConnections.isEmpty()) {
                 throw new RuntimeException("Unable to initialize connection pool");
             }
-        } catch (RuntimeException e) {
+        } catch (RuntimeException | SQLException e) {
             throw new RuntimeException("Unable to initialize connection pool: ", e);
         }
-    }
-
-    public static ConnectionPool getInstance() {
-        if (!instanceCreated.get()) {
-            lock.lock();
-            try {
-                if (instance == null) {
-                    instance = new ConnectionPool();
-                    instanceCreated.set(true);
-                }
-            } finally {
-                lock.unlock();
-            }
-        }
-        return instance;
     }
 
     public Connection getConnection() {
@@ -63,13 +41,45 @@ public class ConnectionPool {
         return connection;
     }
 
+    @Override
+    public Connection getConnection(String username, String password) throws SQLException {
+        throw  new SQLFeatureNotSupportedException();
+    }
+
+    @Override
+    public PrintWriter getLogWriter() throws SQLException {
+        return null;
+    }
+
+    @Override
+    public void setLogWriter(PrintWriter out) throws SQLException {
+
+    }
+
+    @Override
+    public void setLoginTimeout(int seconds) throws SQLException {
+
+    }
+
+    @Override
+    public int getLoginTimeout() throws SQLException {
+        return 0;
+    }
+
+    @Override
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        return null;
+    }
+
     public boolean releaseConnection(Connection connection) {
         if (connection instanceof ProxyConnection) {
             ProxyConnection proxyConnection = (ProxyConnection) connection;
             try {
+                System.out.print(freeConnections.size() + " | " + busyConnections.size() + " -------- ");
                 boolean removed = busyConnections.remove(proxyConnection);
                 if (removed) {
                     freeConnections.put(proxyConnection);
+                    System.out.println(freeConnections.size() + " | " + busyConnections.size());
                 }
                 return removed;
             } catch (InterruptedException e) {
@@ -81,7 +91,7 @@ public class ConnectionPool {
     }
 
     public void destroyPool() throws RuntimeException {
-        for (int i = 0; i < INITIAL_POOL_SIZE; i++) {
+        for (int i = 0; i < this.initialPoolSize; i++) {
             try {
                 ProxyConnection connection = freeConnections.take();
                 connection.closeDirectly();
@@ -110,5 +120,20 @@ public class ConnectionPool {
                 "freeConnections=" + freeConnections +
                 ", busyConnections=" + busyConnections +
                 '}';
+    }
+
+    @Override
+    public void close() throws Exception {
+        this.destroyPool();
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        return null;
+    }
+
+    @Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        return false;
     }
 }

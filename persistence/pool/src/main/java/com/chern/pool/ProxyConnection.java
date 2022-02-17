@@ -1,15 +1,17 @@
-package com.chern.repo.pool;
+package com.chern.pool;
 
 import java.sql.*;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-public class ProxyConnection implements Connection {
+class ProxyConnection implements Connection {
     private final Connection connection;
+    private ConnectionPool connectionPool;
 
-    public ProxyConnection(Connection connection) {
+    ProxyConnection(Connection connection, ConnectionPool connectionPool) {
         this.connection = connection;
+        this.connectionPool = connectionPool;
     }
 
     @Override
@@ -54,7 +56,8 @@ public class ProxyConnection implements Connection {
 
     @Override
     public void close() throws SQLException {
-        boolean released = ConnectionPool.getInstance().releaseConnection(this);
+        System.out.println(connectionPool.hashCode());
+        boolean released = connectionPool.releaseConnection(this);
         if (!released) {
             throw new SQLException("Can't close connection!");
         }

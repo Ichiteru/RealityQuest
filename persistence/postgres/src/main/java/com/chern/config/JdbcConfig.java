@@ -1,6 +1,6 @@
 package com.chern.config;
 
-import com.chern.repo.CustomDataSource;
+import com.chern.pool.ConnectionPool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,20 +23,18 @@ public class JdbcConfig {
     private String username;
     @Value("${db.url}")
     private String url;
+    @Value("${db.initialPoolSize}")
+    private int initialPoolSize;
 
     @Bean
     public DataSource dataSource(){
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(driverName);
-        dataSource.setPassword(password);
-        dataSource.setUsername(username);
-        dataSource.setUrl(url);
+        DriverManagerDataSource factory = new DriverManagerDataSource();
+        factory.setDriverClassName(driverName);
+        factory.setPassword(password);
+        factory.setUsername(username);
+        factory.setUrl(url);
+        ConnectionPool dataSource = new ConnectionPool(factory, initialPoolSize);
         return dataSource;
     }
 
-    @Bean(name = "customDataSource")
-    public DataSource customDataSource(){
-        CustomDataSource dataSource = new CustomDataSource();
-        return dataSource;
-    }
 }

@@ -15,7 +15,7 @@ public class QuestRepositoryPostgres implements QuestRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public QuestRepositoryPostgres(@Qualifier("customDataSource") DataSource dataSource) { // here need to put custom datSource with custom connection pool
+    public QuestRepositoryPostgres(DataSource dataSource) { // here need to put custom datSource with custom connection pool
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 

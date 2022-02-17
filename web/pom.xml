@@ -18,6 +18,8 @@
     <maven.compiler.source>15</maven.compiler.source>
     <maven.compiler.target>15</maven.compiler.target>
     <spring.webmvc.version>5.3.14</spring.webmvc.version>
+    <javax.servlet-api.verison>4.0.1</javax.servlet-api.verison>
+    <jackson.version>2.13.1</jackson.version>
   </properties>
 
   <dependencies>
@@ -32,11 +34,10 @@
       <artifactId>spring-webmvc</artifactId>
       <version>${spring.webmvc.version}</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
-      <version>4.0.1</version>
+      <version>${javax.servlet-api.verison}</version>
     </dependency>
     <dependency>
       <groupId>com.chern</groupId>
@@ -44,31 +45,26 @@
       <version>1.0-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
-      <version>2.13.1</version>
+      <version>${jackson.version}</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
-      <version>2.13.1</version>
+      <version>${jackson.version}</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-      <version>2.13.1</version>
+      <version>${jackson.version}</version>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 -->
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>2.13.1</version>
+      <version>${jackson.version}</version>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -79,7 +75,6 @@
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.1.0</version>
         </plugin>
-        <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_war_packaging -->
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.0.2</version>
