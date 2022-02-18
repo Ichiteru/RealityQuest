@@ -1,11 +1,8 @@
 package com.chern.controller;
 
-import com.chern.model.Quest;
 import com.chern.service.QuestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -25,11 +22,11 @@ public class QuestController {
         return questService.getById(id);
     }
 
-//    @GetMapping(value = "/quests")
-//    public List<Quest> getAll(){
-//        return questService.getAll();
-//    }
-//
+    @GetMapping(value = "/quests")
+    public ResponseEntity getAll(){
+        return ResponseEntity.ok().body("in dev");
+    }
+
 //    @DeleteMapping(value = "/quest/{id}")
 //    public ResponseEntity deleteById(@PathVariable long id){
 //        return null;

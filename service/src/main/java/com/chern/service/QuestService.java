@@ -13,9 +13,9 @@ import java.util.List;
 @Service
 public class QuestService {
 
-    private final QuestRepositoryPostgres questRepository;
+    private final QuestRepository questRepository;
 
-    public QuestService(QuestRepositoryPostgres questRepository) {
+    public QuestService(QuestRepository questRepository) {
         this.questRepository = questRepository;
     }
 
