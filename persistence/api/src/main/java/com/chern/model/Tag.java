@@ -5,23 +5,21 @@ import java.util.List;
 public class Tag {
     private long id;
     private String name;
-    private List<Quest> quests;
 
     public Tag() {
     }
 
-    public Tag(long id, String name, List<Quest> quests) {
+    public Tag(long id, String name) {
         this.id = id;
         this.name = name;
-        this.quests = quests;
+
     }
 
     @Override
     public String toString() {
         return "Tag{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", quests=" + quests +
+                ", name='" + name +
                 '}';
     }
 
@@ -41,11 +39,4 @@ public class Tag {
         this.name = name;
     }
 
-    public List<Quest> getQuests() {
-        return quests;
-    }
-
-    public void setQuests(List<Quest> quests) {
-        this.quests = quests;
-    }
 }

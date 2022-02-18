@@ -1,31 +1,34 @@
 package com.chern.service;
 
+import com.chern.exception.NoSuchDataException;
 import com.chern.model.Quest;
 import com.chern.repo.QuestRepository;
-import com.chern.repo.QuestRepositoryPostgres;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.chern.repo.TagRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class QuestService {
 
     private final QuestRepository questRepository;
+    private final TagRepository tagRepository;
 
-    public QuestService(QuestRepository questRepository) {
+    public QuestService(QuestRepository questRepository, TagRepository tagRepository) {
         this.questRepository = questRepository;
+        this.tagRepository = tagRepository;
     }
 
-
-    public ResponseEntity getById(long id) {
+    public Quest getById(long id) {
         try {
-            return ResponseEntity.ok().body(questRepository.getById(id));
+            Quest quest = questRepository.getById(id);
+            if (tagRepository.existsByQuestId(id).booleanValue()){
+                quest.setTags(tagRepository.getByQuestId(id));
+            }
+            return quest;
         } catch (EmptyResultDataAccessException ex) {
-            return ResponseEntity.badRequest().body("Requested quest does not exist");
+            throw new NoSuchDataException("This quest doesn't exist");
         }
     }
+
 
 }

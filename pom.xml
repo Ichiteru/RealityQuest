@@ -17,6 +17,7 @@
         <module>web</module>
         <module>persistence</module>
         <module>service</module>
+        <module>exception</module>
     </modules>
 
 

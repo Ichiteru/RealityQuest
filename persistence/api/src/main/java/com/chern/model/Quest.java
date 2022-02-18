@@ -1,5 +1,7 @@
 package com.chern.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -11,25 +13,15 @@ public class Quest {
    private String description;
    private String genre;
    private double price;
+   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm:ss")
    private LocalTime duration;
+   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
    private LocalDate creationDate;
+   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
    private LocalDate modificationDate;
    private int maxPeople;
 
    private List<Tag> tags;
-
-   public Quest(long id, String name, String description, String genre, double price, LocalTime duration, LocalDate creationDate, LocalDate modificationDate, int maxPeople, List<Tag> tags) {
-      this.id = id;
-      this.name = name;
-      this.description = description;
-      this.genre = genre;
-      this.price = price;
-      this.duration = duration;
-      this.creationDate = creationDate;
-      this.modificationDate = modificationDate;
-      this.maxPeople = maxPeople;
-      this.tags = tags;
-   }
 
    public Quest() {
    }

@@ -8,7 +8,6 @@ import java.util.List;
 public final class TagBuilder {
     private long id;
     private String name;
-    private List<Quest> quests;
 
     private TagBuilder() {
     }
@@ -27,16 +26,10 @@ public final class TagBuilder {
         return this;
     }
 
-    public TagBuilder withQuests(List<Quest> quests) {
-        this.quests = quests;
-        return this;
-    }
-
     public Tag build() {
         Tag tag = new Tag();
         tag.setId(id);
         tag.setName(name);
-        tag.setQuests(quests);
         return tag;
     }
 }

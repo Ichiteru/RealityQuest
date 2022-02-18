@@ -19,7 +19,7 @@ public class QuestController {
         if (id < 0){
             return ResponseEntity.badRequest().body("Incorrect request(id should be more than -1)");
         }
-        return questService.getById(id);
+        return ResponseEntity.ok(questService.getById(id));
     }
 
     @GetMapping(value = "/quests")
