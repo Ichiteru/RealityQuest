@@ -22,5 +22,6 @@ public class MainWebAppInitializer implements WebApplicationInitializer {
                 servletContext.addServlet("mvc", new DispatcherServlet(new GenericWebApplicationContext()));
         appServlet.setLoadOnStartup(1);
         appServlet.addMapping("/");
+        appServlet.setInitParameter("throwExceptionIfNoHandlerFound", "true");
     }
 }
