@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface QuestRepository {
 
-    Quest save(Quest quest);
+    Number save(Quest quest);
     Quest getById(long id);
     List<Quest> getAll();
     void deleteById(long id);

@@ -1,7 +1,6 @@
 package com.chern.exception.handler;
 
-import com.chern.exception.NoSuchDataException;
-import com.chern.exception.dto.ApiError;
+import com.chern.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,12 +13,33 @@ import java.time.LocalDateTime;
 public class ExceptionHandler extends ResponseEntityExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(NoSuchDataException.class)
-    public ResponseEntity<ApiError> handleNoSuchDataException(Exception ex, WebRequest request){
-        ApiError apiError = new ApiError(LocalDateTime.now(), HttpStatus.BAD_REQUEST.value(), ex.getMessage());
+    public ResponseEntity<ApiError> handleNoSuchDataException(Exception e, WebRequest request){
+        ApiError apiError = ApiErrorBuilder.anApiError()
+                .withTimestamp(LocalDateTime.now())
+                .withStatus(HttpStatus.BAD_REQUEST.value())
+                .withError(e.getMessage()).build();
 //        ApiError apiError = new ApiError(ex.getMessage());
-        ResponseEntity<ApiError> apiErrorResponseEntity = new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
-        return apiErrorResponseEntity;
+        ResponseEntity<ApiError> responseEntity = new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return responseEntity;
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(IncorrectPathVariableException.class)
+    public ResponseEntity<ApiError> handleIncorrectPathVariableException(Exception e, WebRequest request){
+        ApiError apiError = ApiErrorBuilder.anApiError()
+                .withTimestamp(LocalDateTime.now())
+                .withStatus(HttpStatus.BAD_REQUEST.value())
+                .withError(e.getMessage()).build();
+        ResponseEntity<ApiError> responseEntity = new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return responseEntity;
+    }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(IncorrectDataException.class)
+    public ResponseEntity<ApiError> handleIncorrectDataException(Exception e, WebRequest request){
+        ApiError apiError = ApiErrorBuilder.anApiError()
+                .withTimestamp(LocalDateTime.now())
+                .withStatus(HttpStatus.BAD_REQUEST.value())
+                .withError(e.getMessage()).build();
+        ResponseEntity<ApiError> responseEntity = new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return responseEntity;
+    }
 }

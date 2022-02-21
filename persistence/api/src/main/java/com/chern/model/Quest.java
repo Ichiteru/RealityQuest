@@ -13,7 +13,7 @@ public class Quest {
    private String description;
    private String genre;
    private double price;
-   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "hh:mm:ss")
+//   @JsonFormat(pattern = "hh:mm:ss")
    private LocalTime duration;
    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
    private LocalDate creationDate;

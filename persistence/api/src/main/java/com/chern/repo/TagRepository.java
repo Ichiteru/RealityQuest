@@ -8,4 +8,6 @@ public interface TagRepository {
 
     List<Tag> getByQuestId(long id);
     Boolean existsByQuestId(long id);
+
+    List<Tag> save(List<Tag> tags);
 }
