@@ -7,10 +7,11 @@ import com.chern.repo.QuestRepository;
 import com.chern.repo.QuestTagRepository;
 import com.chern.repo.TagRepository;
 import com.chern.validation.Validator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,13 +22,16 @@ public class QuestService {
     private final QuestTagRepository questTagRepository;
     private final QuestRepository questRepository;
     private final TagRepository tagRepository;
-    private final Validator questValidator;
+    private final Validator<Quest> questValidator;
+    private final Validator<Tag> tagValidator;
 
-    public QuestService(QuestTagRepository questTagRepository, QuestRepository questRepository, TagRepository tagRepository, Validator questValidator) {
+    public QuestService(QuestTagRepository questTagRepository, QuestRepository questRepository,
+                        TagRepository tagRepository, Validator questValidator, Validator<Tag> tagValidator) {
         this.questTagRepository = questTagRepository;
         this.questRepository = questRepository;
         this.tagRepository = tagRepository;
         this.questValidator = questValidator;
+        this.tagValidator = tagValidator;
     }
 
     public Quest getById(long id) {
@@ -51,21 +55,26 @@ public class QuestService {
         }
     }
 
+    @Transactional
     public Quest save(Quest quest){
         questValidator.validate(quest);
-        Number questId = questRepository.save(quest);
-        quest.setId(questId.longValue());
+        quest.setCreationDate(LocalDate.now());
+        quest.setModificationDate(LocalDate.now());
+        quest = questRepository.save(quest);
         if (quest.getTags() != null){
+            quest.getTags().forEach(tag -> tagValidator.validate(tag));
             Map<Boolean, List<Tag>> derivedTags = quest.getTags()
                     .stream()
                     .collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
-            List<Tag> newTags = derivedTags.get(true);
             List<Tag> oldTags = derivedTags.get(false);
-            // insert old tags into db and get their id's
-            newTags = tagRepository.save(newTags);
-            newTags.addAll(oldTags);
-            questTagRepository.bindQuestWithTags(quest, newTags);
+            List<Tag> newTags = derivedTags.get(true);
+            if (newTags != null){
+                newTags = tagRepository.save(newTags);
+                oldTags.addAll(newTags);
+            }
+            questTagRepository.bindQuestWithTags(quest, oldTags);
+            quest.setTags(oldTags);
         }
-        return null;
+        return quest;
     }
 }

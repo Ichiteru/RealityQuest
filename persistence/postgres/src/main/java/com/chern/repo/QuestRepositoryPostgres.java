@@ -27,13 +27,11 @@ public class QuestRepositoryPostgres implements QuestRepository {
     }
 
     @Override
-    public Number save(Quest quest) {
+    public Quest save(Quest quest) {
         String query = "insert into quest (name, genre, price, description, duration, creation_date," +
                 " modification_date, max_people) " +
                 "values (?, ?, ?, ?, ?, ?, ?, ?) returning id";
-
         KeyHolder keyHolder = new GeneratedKeyHolder();
-
         jdbcTemplate.update(con -> {
             PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, quest.getName());
@@ -41,13 +39,13 @@ public class QuestRepositoryPostgres implements QuestRepository {
             ps.setBigDecimal(3, BigDecimal.valueOf(quest.getPrice()));
             ps.setString(4, quest.getDescription());
             ps.setTime(5, Time.valueOf(quest.getDuration()));
-            ps.setDate(6, Date.valueOf(LocalDate.now()));
-            ps.setDate(7, Date.valueOf(LocalDate.now()));
+            ps.setDate(6, Date.valueOf(quest.getCreationDate()));
+            ps.setDate(7, Date.valueOf(quest.getModificationDate()));
             ps.setInt(8, quest.getMaxPeople());
             return ps;
         }, keyHolder);
-        System.out.println(keyHolder.getKey());
-        return keyHolder.getKey();
+        quest.setId(keyHolder.getKey().longValue());
+        return quest;
     }
 
     @Override
@@ -58,7 +56,7 @@ public class QuestRepositoryPostgres implements QuestRepository {
     }
 
     @Override
-    public List<Quest> getAll() throws EmptyResultDataAccessException{
+    public List<Quest> getAll() throws EmptyResultDataAccessException {
         String query = "select id, name, genre, price, duration, max_people from quest";
         List<Quest> quests = jdbcTemplate.queryForObject(query, new RowMapper<List<Quest>>() {
             @Override

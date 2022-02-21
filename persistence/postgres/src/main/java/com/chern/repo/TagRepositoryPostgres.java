@@ -54,7 +54,7 @@ public class TagRepositoryPostgres implements TagRepository{
     }
 
     @Override
-    public List<Tag> save(List<Tag> tags){
+    public List<Tag> save(List<Tag> tags) {
         String query = "insert into tag (id, name) values (?, ?)";
         jdbcTemplate.batchUpdate(query, new BatchPreparedStatementSetter(){
 

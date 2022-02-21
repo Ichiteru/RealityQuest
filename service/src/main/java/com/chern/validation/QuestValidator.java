@@ -18,5 +18,8 @@ public class QuestValidator implements Validator<Quest>{
         if (quest.getName().equals("") || quest.getName().equals(null)){
             throw new IncorrectDataException("Empty quest genre");
         }
+        if (quest.getMaxPeople() < 1){
+            throw new IncorrectDataException("Max people digit must be more than 0");
+        }
     }
 }

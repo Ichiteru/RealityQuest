@@ -40,8 +40,8 @@ public class QuestController {
     , produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity save(@RequestBody Quest quest){
-        questService.save(quest);
-        return ResponseEntity.ok("test save quest");
+        Quest saveQuest = questService.save(quest);
+        return ResponseEntity.ok(saveQuest);
     }
 
 //    @DeleteMapping(value = "/quest/{id}")
