@@ -64,8 +64,7 @@ public class QuestService {
         if (quest.getTags() != null){
             quest.getTags().forEach(tag -> tagValidator.validate(tag));
             Map<Boolean, List<Tag>> derivedTags = quest.getTags()
-                    .stream()
-                    .collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
+                    .stream().collect(Collectors.partitioningBy(tag -> tag.getId()==0));
             List<Tag> oldTags = derivedTags.get(false);
             List<Tag> newTags = derivedTags.get(true);
             if (newTags != null){
@@ -76,5 +75,33 @@ public class QuestService {
             quest.setTags(oldTags);
         }
         return quest;
+    }
+
+    @Transactional
+    public Quest update(Quest quest) {
+        questValidator.validate(quest);
+        quest.setModificationDate(LocalDate.now());
+        quest = questRepository.update(quest);
+        List<Tag> tags = quest.getTags();
+        if (tags != null){
+            tags.forEach(tag -> tagValidator.validate(tag));
+            tags = getUpdatedTags(tags);
+            questTagRepository.unbindQuestTags(quest, tags);
+            questTagRepository.bindQuestWithTags(quest, tags);
+        } else {
+            questTagRepository.unbindAllQuestTags(quest);
+        }
+        return quest;
+    }
+
+    private List<Tag> getUpdatedTags(List<Tag> tags){
+        Map<Boolean, List<Tag>> derivedTags = tags.stream().collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
+        List<Tag> oldTags = derivedTags.get(false);
+        List<Tag> newTags = derivedTags.get(true);
+        if (newTags != null){
+            newTags = tagRepository.save(newTags);
+            oldTags.addAll(newTags);
+        }
+        return oldTags;
     }
 }

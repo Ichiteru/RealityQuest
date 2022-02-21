@@ -2,9 +2,7 @@ package com.chern.controller;
 
 import com.chern.exception.IncorrectPathVariableException;
 import com.chern.model.Quest;
-import com.chern.model.TestRequest;
 import com.chern.service.QuestService;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,14 +42,18 @@ public class QuestController {
         return ResponseEntity.ok(saveQuest);
     }
 
+    @PutMapping(path = "/quests"
+            , consumes = MediaType.APPLICATION_JSON_VALUE
+            ,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity update(@RequestBody Quest quest){
+        Quest updatedQuest = questService.update(quest);
+        return ResponseEntity.ok(updatedQuest);
+    }
+
 //    @DeleteMapping(value = "/quest/{id}")
 //    public ResponseEntity deleteById(@PathVariable long id){
 //        return null;
 //    }
 //
-//    @PostMapping(value = "/quest")
-//    public ResponseEntity save(@RequestBody Quest quest){
-//        questService.save(quest);
-//        return null;
-//    }
+
 }

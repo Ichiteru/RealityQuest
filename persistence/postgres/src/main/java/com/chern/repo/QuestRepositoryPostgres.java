@@ -5,6 +5,7 @@ import com.chern.model.Quest;
 import com.chern.model.builder.QuestBuilder;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -85,6 +86,23 @@ public class QuestRepositoryPostgres implements QuestRepository {
 
     @Override
     public Quest update(Quest quest) {
-        return null;
+        String query = "update quest set name=?, genre=?, price=?, description=?, duration=?, modification_date=?, max_people=? " +
+                "where id=?";
+        jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                PreparedStatement ps = con.prepareStatement(query);
+                ps.setString(1, quest.getName());
+                ps.setString(2, quest.getGenre());
+                ps.setBigDecimal(3, BigDecimal.valueOf(quest.getPrice()));
+                ps.setString(4, quest.getDescription());
+                ps.setTime(5, Time.valueOf(quest.getDuration()));
+                ps.setDate(6, Date.valueOf(quest.getModificationDate()));
+                ps.setInt(7, quest.getMaxPeople());
+                ps.setLong(8, quest.getId());
+                return ps;
+            }
+        });
+        return quest;
     }
 }
