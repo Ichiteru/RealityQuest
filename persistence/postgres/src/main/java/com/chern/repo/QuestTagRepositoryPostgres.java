@@ -51,8 +51,6 @@ public class QuestTagRepositoryPostgres implements QuestTagRepository{
         String query = "delete from quest_tag where quest_id=" + quest.getId() + " and tag_id not in(:ids)";
         List<Long> collect = tags.stream().map(Tag::getId).collect(Collectors.toList());
         Map namedParams = Collections.singletonMap("ids", collect);
-//        SqlParameterSource parameters = new MapSqlParameterSource("ids",
-//                tags.stream().map(Tag::getId).collect(Collectors.toList()));
         namedParameterJdbcTemplate.update(query, namedParams);
     }
 

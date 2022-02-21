@@ -8,6 +8,7 @@ import com.chern.repo.QuestTagRepository;
 import com.chern.repo.TagRepository;
 import com.chern.validation.Validator;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +38,7 @@ public class QuestService {
     public Quest getById(long id) {
         try {
             Quest quest = questRepository.getById(id);
-            if (tagRepository.existsByQuestId(id).booleanValue()){
+            if (tagRepository.existsByQuestId(id).booleanValue()) {
                 quest.setTags(tagRepository.getByQuestId(id));
             }
             return quest;
@@ -46,28 +47,28 @@ public class QuestService {
         }
     }
 
-    public List<Quest> getAll(){
+    public List<Quest> getAll() {
         try {
             List<Quest> quests = questRepository.getAll();
             return quests;
-        } catch (EmptyResultDataAccessException ex){
+        } catch (EmptyResultDataAccessException ex) {
             throw new NoSuchDataException("There are no quests in storage");
         }
     }
 
     @Transactional
-    public Quest save(Quest quest){
+    public Quest save(Quest quest) {
         questValidator.validate(quest);
         quest.setCreationDate(LocalDate.now());
         quest.setModificationDate(LocalDate.now());
         quest = questRepository.save(quest);
-        if (quest.getTags() != null){
+        if (quest.getTags() != null) {
             quest.getTags().forEach(tag -> tagValidator.validate(tag));
             Map<Boolean, List<Tag>> derivedTags = quest.getTags()
-                    .stream().collect(Collectors.partitioningBy(tag -> tag.getId()==0));
+                    .stream().collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
             List<Tag> oldTags = derivedTags.get(false);
             List<Tag> newTags = derivedTags.get(true);
-            if (newTags != null){
+            if (newTags != null) {
                 newTags = tagRepository.save(newTags);
                 oldTags.addAll(newTags);
             }
@@ -83,7 +84,7 @@ public class QuestService {
         quest.setModificationDate(LocalDate.now());
         quest = questRepository.update(quest);
         List<Tag> tags = quest.getTags();
-        if (tags != null){
+        if (tags != null) {
             tags.forEach(tag -> tagValidator.validate(tag));
             tags = getUpdatedTags(tags);
             questTagRepository.unbindQuestTags(quest, tags);
@@ -94,14 +95,25 @@ public class QuestService {
         return quest;
     }
 
-    private List<Tag> getUpdatedTags(List<Tag> tags){
+    public long deleteById(long id) {
+        if (!questRepository.existsById(id).booleanValue()) {
+            throw new NoSuchDataException("Quest with id = " + id + " doesn't exists");
+        }
+        return questRepository.deleteById(id);
+    }
+
+    private List<Tag> getUpdatedTags(List<Tag> tags) {
         Map<Boolean, List<Tag>> derivedTags = tags.stream().collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
         List<Tag> oldTags = derivedTags.get(false);
         List<Tag> newTags = derivedTags.get(true);
-        if (newTags != null){
+        if (newTags != null) {
             newTags = tagRepository.save(newTags);
             oldTags.addAll(newTags);
         }
         return oldTags;
+    }
+
+    public int delete(List<Long> ids) {
+        return questRepository.delete(ids);
     }
 }

@@ -9,6 +9,11 @@ public interface QuestRepository {
     Quest save(Quest quest);
     Quest getById(long id);
     List<Quest> getAll();
-    void deleteById(long id);
     Quest update(Quest quest);
+
+    Boolean existsById(long id);
+
+    long deleteById(long id);
+
+    int delete(List<Long> ids);
 }

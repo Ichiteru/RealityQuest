@@ -7,6 +7,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -14,17 +15,20 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class QuestRepositoryPostgres implements QuestRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public QuestRepositoryPostgres(DataSource dataSource) { // here need to put custom datSource with custom connection pool
+    public QuestRepositoryPostgres(DataSource dataSource, NamedParameterJdbcTemplate namedParameterJdbcTemplate) { // here need to put custom datSource with custom connection pool
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
     @Override
@@ -80,11 +84,6 @@ public class QuestRepositoryPostgres implements QuestRepository {
     }
 
     @Override
-    public void deleteById(long id) {
-
-    }
-
-    @Override
     public Quest update(Quest quest) {
         String query = "update quest set name=?, genre=?, price=?, description=?, duration=?, modification_date=?, max_people=? " +
                 "where id=?";
@@ -104,5 +103,28 @@ public class QuestRepositoryPostgres implements QuestRepository {
             }
         });
         return quest;
+    }
+
+    @Override
+    public Boolean existsById(long id) {
+        String query = "select exists (select 1 from quest where id=?)";
+        Boolean aBoolean = jdbcTemplate.queryForObject(query, Boolean.class, id);
+        return aBoolean;
+    }
+
+    @Override
+    public long deleteById(long id){
+        String query = "delete from quest where id=?";
+        jdbcTemplate.update(query, id);
+        return id;
+    }
+
+    @Override
+    public int delete(List<Long> ids) {
+        String query = "delete from quest where id in(:ids)";
+        Map namedParams = Collections.singletonMap("ids", ids);
+//        SqlParameterSource parameters = new MapSqlParameterSource("ids",
+//                tags.stream().map(Tag::getId).collect(Collectors.toList()));
+        return namedParameterJdbcTemplate.update(query, namedParams);
     }
 }
