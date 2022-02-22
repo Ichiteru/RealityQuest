@@ -62,9 +62,9 @@ public class QuestController {
 
     @DeleteMapping(value = "/quests")
     public ResponseEntity delete(@RequestBody List<Long> ids){
-        if (ids == null){
-            throw new NoSuchDataException("There are no records select for removing");
+        if (ids.size() == 0){
+            throw new NoSuchDataException("There are no quests selected for removing");
         }
-        return ResponseEntity.ok(questService.delete(ids) + " record(-s) were removed");
+        return ResponseEntity.ok(questService.delete(ids) + " quest(-s) were removed");
     }
 }

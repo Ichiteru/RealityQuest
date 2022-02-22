@@ -1,5 +1,6 @@
 package com.chern.service;
 
+import com.chern.exception.DuplicateFieldException;
 import com.chern.exception.NoSuchDataException;
 import com.chern.model.Quest;
 import com.chern.model.Tag;
@@ -7,6 +8,7 @@ import com.chern.repo.QuestRepository;
 import com.chern.repo.QuestTagRepository;
 import com.chern.repo.TagRepository;
 import com.chern.validation.Validator;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,7 +105,11 @@ public class QuestService {
         List<Tag> oldTags = derivedTags.get(false);
         List<Tag> newTags = derivedTags.get(true);
         if (newTags != null) {
-            newTags = tagRepository.save(newTags);
+            try {
+                newTags = tagRepository.save(newTags);
+            } catch (DuplicateKeyException ex){
+                throw new DuplicateFieldException("Tag with some of this names already exists");
+            }
             oldTags.addAll(newTags);
         }
         return oldTags;

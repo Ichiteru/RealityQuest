@@ -1,6 +1,7 @@
 package com.chern.exception.handler;
 
 import com.chern.exception.*;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,8 +50,18 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ApiError> handleSQLException(Exception e){
         ApiError apiError = ApiErrorBuilder.anApiError()
                 .withTimestamp(LocalDateTime.now())
-                .withStatus(HttpStatus.BAD_REQUEST.value())
+                .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .withError(e.getMessage()).build();
+        ResponseEntity<ApiError> responseEntity = new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseEntity;
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler({DuplicateFieldException.class})
+    public ResponseEntity<ApiError> handleDuplicateKeyException(Exception e){
+        ApiError apiError = ApiErrorBuilder.anApiError()
+                .withTimestamp(LocalDateTime.now())
+                .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .withError(e.getLocalizedMessage()).build();
         ResponseEntity<ApiError> responseEntity = new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
         return responseEntity;
     }
