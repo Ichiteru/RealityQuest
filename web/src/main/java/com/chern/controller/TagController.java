@@ -20,7 +20,7 @@ public class TagController {
     }
 
     @GetMapping(value = "/tags/{id}")
-    public ResponseEntity getById(@PathVariable long id){
+    public ResponseEntity getById(@PathVariable long id) {
         if (id < 0) {
             throw new IncorrectPathVariableException("Incorrect id(" + id + "): must be more than -1x");
         }
@@ -28,21 +28,21 @@ public class TagController {
     }
 
     @GetMapping(value = "/tags")
-    public ResponseEntity getAll(){
+    public ResponseEntity getAll() {
         List<Tag> tags = tagService.getAll();
         return ResponseEntity.ok(tags);
     }
 
     @PostMapping(path = "/tags")
-    public ResponseEntity save(@RequestBody List<Tag> tags){
-        if (tags.size() == 0){
+    public ResponseEntity save(@RequestBody List<Tag> tags) {
+        if (tags.size() == 0) {
             throw new NoSuchDataException("There are no tags selected for saving");
         }
         return ResponseEntity.ok().body(tagService.save(tags));
     }
 
     @DeleteMapping(path = "/tags/{id}")
-    public ResponseEntity deleteById(@PathVariable long id){
+    public ResponseEntity deleteById(@PathVariable long id) {
         if (id < 0) {
             throw new IncorrectPathVariableException("Incorrect id(" + id + "): must be more than -1x");
         }
@@ -50,8 +50,8 @@ public class TagController {
     }
 
     @DeleteMapping(path = "/tags")
-    public ResponseEntity deleteById(@RequestBody List<Long> ids){
-        if (ids.size() == 0){
+    public ResponseEntity deleteById(@RequestBody List<Long> ids) {
+        if (ids.size() == 0) {
             throw new NoSuchDataException("There are no tags selected for removing");
         }
         return ResponseEntity.ok(tagService.delete(ids) + " tag(-s) were removed");

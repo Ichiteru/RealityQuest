@@ -7,6 +7,7 @@ import com.chern.service.QuestService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 @RestController
@@ -69,11 +70,6 @@ public class QuestController {
             , @RequestParam(required = false, defaultValue = "") String descriptionPart
             , @RequestParam(required = false, defaultValue = "") String sortBy
             , @RequestParam(required = false, defaultValue = "DESC") String sortType) {
-        System.out.println(tagName);
-        System.out.println(namePart);
-        System.out.println(descriptionPart);
-        System.out.println(sortBy);
-        System.out.println(sortType);
         List<Quest> quests = questService.searchBy(tagName, namePart, descriptionPart, sortBy, sortType);
         return ResponseEntity.ok(quests);
     }
