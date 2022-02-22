@@ -7,6 +7,7 @@ import com.chern.model.Tag;
 import com.chern.repo.QuestRepository;
 import com.chern.repo.QuestTagRepository;
 import com.chern.repo.TagRepository;
+import com.chern.util.SearchQueryBuilder;
 import com.chern.validation.Validator;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -117,5 +118,11 @@ public class QuestService {
 
     public int delete(List<Long> ids) {
         return questRepository.delete(ids);
+    }
+
+    public List<Quest> searchBy(String tagName, String namePart,
+                                String descriptionPart, String sortBy, String sortType) {
+        String query = SearchQueryBuilder.buildSearchQuery(tagName,namePart,descriptionPart,sortBy,sortType);
+        return questRepository.searchByParams(query);
     }
 }

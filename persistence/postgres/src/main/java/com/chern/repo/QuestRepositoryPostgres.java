@@ -127,4 +127,32 @@ public class QuestRepositoryPostgres implements QuestRepository {
 //                tags.stream().map(Tag::getId).collect(Collectors.toList()));
         return namedParameterJdbcTemplate.update(query, namedParams);
     }
+
+    @Override
+    public List<Quest> searchByParams(String query){
+//        String query = "select q.id, q.name, genre, price, duration, max_people from quest_tag" +
+//                " inner join quest q on q.id = quest_tag.quest_id" +
+//                " inner join tag t on t.id = quest_tag.tag_id" +
+//                " where upper(t.name) like upper('%" + tagName + "%')" +
+//                " UNION DISTINCT" +
+//                " select * from word_frequency('" + questName + "', '" + questDescription + "') " + sortByQueryPart;
+        List<Quest> quests = jdbcTemplate.queryForObject(query, new RowMapper<List<Quest>>() {
+            @Override
+            public List<Quest> mapRow(ResultSet rs, int rowNum) throws SQLException {
+                List<Quest> quests = new ArrayList<>();
+                do {
+                    quests.add(
+                            QuestBuilder.aQuest()
+                                    .withId(rs.getLong("id"))
+                                    .withName(rs.getString("name"))
+                                    .withGenre(rs.getString("genre"))
+                                    .withPrice(rs.getDouble("price"))
+                                    .withDuration(rs.getTime("duration").toLocalTime())
+                                    .withMaxPeople(rs.getInt("max_people")).build());
+                } while (rs.next());
+                return quests;
+            }
+        });
+        return quests;
+    }
 }

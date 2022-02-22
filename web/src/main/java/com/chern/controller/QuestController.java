@@ -7,8 +7,6 @@ import com.chern.service.QuestService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -35,17 +33,14 @@ public class QuestController {
         return ResponseEntity.ok().body(quests);
     }
 
-    @PostMapping(path = "/quests"
-            , consumes = MediaType.APPLICATION_JSON_VALUE
-            , produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PostMapping(path = "/quests", consumes = MediaType.APPLICATION_JSON_VALUE
+            , produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity save(@RequestBody Quest quest) {
         Quest saveQuest = questService.save(quest);
         return ResponseEntity.ok(saveQuest);
     }
 
-    @PutMapping(path = "/quests"
-            , consumes = MediaType.APPLICATION_JSON_VALUE
+    @PutMapping(path = "/quests", consumes = MediaType.APPLICATION_JSON_VALUE
             , produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity update(@RequestBody Quest quest) {
         Quest updatedQuest = questService.update(quest);
@@ -61,10 +56,25 @@ public class QuestController {
     }
 
     @DeleteMapping(value = "/quests")
-    public ResponseEntity delete(@RequestBody List<Long> ids){
-        if (ids.size() == 0){
+    public ResponseEntity delete(@RequestBody List<Long> ids) {
+        if (ids.size() == 0) {
             throw new NoSuchDataException("There are no quests selected for removing");
         }
         return ResponseEntity.ok(questService.delete(ids) + " quest(-s) were removed");
+    }
+
+    @GetMapping(value = "/quests/search")
+    public ResponseEntity search(@RequestParam(required = false, defaultValue = "") String tagName
+            , @RequestParam(required = false, defaultValue = "") String namePart
+            , @RequestParam(required = false, defaultValue = "") String descriptionPart
+            , @RequestParam(required = false, defaultValue = "") String sortBy
+            , @RequestParam(required = false, defaultValue = "DESC") String sortType) {
+        System.out.println(tagName);
+        System.out.println(namePart);
+        System.out.println(descriptionPart);
+        System.out.println(sortBy);
+        System.out.println(sortType);
+        List<Quest> quests = questService.searchBy(tagName, namePart, descriptionPart, sortBy, sortType);
+        return ResponseEntity.ok(quests);
     }
 }
