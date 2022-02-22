@@ -14,19 +14,13 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
-            <version>${spring-jdbc.version}</version>
+            <version>${spring.jdbc.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.13.1</version>
+            <version>${jackson.version}</version>
         </dependency>
     </dependencies>
-
-    <properties>
-        <maven.compiler.source>15</maven.compiler.source>
-        <maven.compiler.target>15</maven.compiler.target>
-        <spring-jdbc.version>5.3.14</spring-jdbc.version>
-    </properties>
 
 </project>
