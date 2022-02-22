@@ -8,7 +8,6 @@ import com.chern.repo.QuestTagRepository;
 import com.chern.repo.TagRepository;
 import com.chern.validation.Validator;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,22 +63,18 @@ public class QuestService {
         quest = questRepository.save(quest);
         if (quest.getTags() != null) {
             quest.getTags().forEach(tag -> tagValidator.validate(tag));
-            Map<Boolean, List<Tag>> derivedTags = quest.getTags()
-                    .stream().collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
-            List<Tag> oldTags = derivedTags.get(false);
-            List<Tag> newTags = derivedTags.get(true);
-            if (newTags != null) {
-                newTags = tagRepository.save(newTags);
-                oldTags.addAll(newTags);
-            }
-            questTagRepository.bindQuestWithTags(quest, oldTags);
-            quest.setTags(oldTags);
+            List<Tag> tags = getUpdatedTags(quest.getTags());
+            questTagRepository.bindQuestWithTags(quest, tags);
+            quest.setTags(tags);
         }
         return quest;
     }
 
     @Transactional
     public Quest update(Quest quest) {
+        if (!questRepository.existsById(quest.getId())){
+            throw new NoSuchDataException("There is no quest with this id(" + quest.getId() + ")");
+        }
         questValidator.validate(quest);
         quest.setModificationDate(LocalDate.now());
         quest = questRepository.update(quest);
@@ -103,7 +98,8 @@ public class QuestService {
     }
 
     private List<Tag> getUpdatedTags(List<Tag> tags) {
-        Map<Boolean, List<Tag>> derivedTags = tags.stream().collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
+        Map<Boolean, List<Tag>> derivedTags = tags.stream()
+                .collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
         List<Tag> oldTags = derivedTags.get(false);
         List<Tag> newTags = derivedTags.get(true);
         if (newTags != null) {

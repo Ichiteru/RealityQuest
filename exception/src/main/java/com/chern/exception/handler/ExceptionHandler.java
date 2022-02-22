@@ -9,6 +9,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
@@ -20,7 +21,6 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
                 .withTimestamp(LocalDateTime.now())
                 .withStatus(HttpStatus.BAD_REQUEST.value())
                 .withError(e.getMessage()).build();
-//        ApiError apiError = new ApiError(ex.getMessage());
         ResponseEntity<ApiError> responseEntity = new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
         return responseEntity;
     }
@@ -45,11 +45,20 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
         return responseEntity;
     }
 
+    @org.springframework.web.bind.annotation.ExceptionHandler(SQLException.class)
+    public ResponseEntity<ApiError> handleSQLException(Exception e){
+        ApiError apiError = ApiErrorBuilder.anApiError()
+                .withTimestamp(LocalDateTime.now())
+                .withStatus(HttpStatus.BAD_REQUEST.value())
+                .withError(e.getMessage()).build();
+        ResponseEntity<ApiError> responseEntity = new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+        return responseEntity;
+    }
+
     @Override
     protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        ApiError apiError = ApiErrorBuilder.anApiError().withError("asd")
+        ApiError apiError = ApiErrorBuilder.anApiError().withError("There is no such mapping")
                 .withStatus(HttpStatus.NOT_FOUND.value()).withTimestamp(LocalDateTime.now()).build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
-//        return super.handleNoHandlerFoundException(ex, headers, status, request);
     }
 }
