@@ -1,4 +1,4 @@
-package com.chern.exception;
+package com.chern.exception.handler;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;

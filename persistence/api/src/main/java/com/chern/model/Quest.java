@@ -1,7 +1,5 @@
 package com.chern.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -13,11 +11,8 @@ public class Quest {
    private String description;
    private String genre;
    private double price;
-//   @JsonFormat(pattern = "hh:mm:ss")
    private LocalTime duration;
-   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
    private LocalDate creationDate;
-   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
    private LocalDate modificationDate;
    private int maxPeople;
 

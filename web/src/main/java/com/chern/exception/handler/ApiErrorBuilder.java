@@ -1,4 +1,4 @@
-package com.chern.exception;
+package com.chern.exception.handler;
 
 import java.time.LocalDateTime;
 

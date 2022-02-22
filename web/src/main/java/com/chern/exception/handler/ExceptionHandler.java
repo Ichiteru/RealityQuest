@@ -1,7 +1,6 @@
 package com.chern.exception.handler;
 
 import com.chern.exception.*;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
