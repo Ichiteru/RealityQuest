@@ -1,0 +1,30 @@
+version: "3.7"
+
+volumes:
+  pgdata:
+    driver: local
+
+services:
+  database:
+    container_name: postgres-realityquest-db
+#    hostname: postgres-realityquest
+    image: postgres:${POSTGRES_VERSION}
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - PGDATA=/var/lib/postgresql/data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  liquibase:
+    container_name: realityquest-liquibase
+    image: liquibase/liquibase
+    command: --url=jdbc:postgresql://postgres-realityquest-db:5432/test --changeLogFile=config/changelog.xml --username=postgres --password=root update
+    volumes:
+#      - config/changelog.xml:/liquibase/changelog.xml
+      - D:\RealityQuestClone\docker:/liquibase/changelog
+    depends_on:  [database]
+
+
