@@ -8,6 +8,8 @@ import com.chern.validation.Validator;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -33,7 +35,7 @@ public class TagService {
         try {
             return tagRepository.getAll();
         } catch (EmptyResultDataAccessException exception){
-            throw new NoSuchDataException("There are no saved tags");
+            return new ArrayList<>();
         }
     }
 
@@ -54,6 +56,9 @@ public class TagService {
     }
 
     public int delete(List<Long> ids) {
+        if (ids.size() == 0){
+            return 0;
+        }
         return tagRepository.delete(ids);
     }
 }

@@ -12,10 +12,12 @@ import java.util.logging.Logger;
 public class ConnectionPool implements DataSource, AutoCloseable{
 
     private final int initialPoolSize;
+    private int getConnectionTryCounter;
     private final LinkedBlockingQueue<ProxyConnection> freeConnections;
     private final LinkedBlockingQueue<ProxyConnection> busyConnections;
 
     public ConnectionPool(DriverManagerDataSource connectionFactory, int initialPoolSize) {
+        this.getConnectionTryCounter = 0;
         this.initialPoolSize = initialPoolSize;
         freeConnections = new LinkedBlockingQueue<>(this.initialPoolSize);
         busyConnections = new LinkedBlockingQueue<>(this.initialPoolSize);
@@ -37,6 +39,13 @@ public class ConnectionPool implements DataSource, AutoCloseable{
             connection = freeConnections.take();
             busyConnections.put(connection);
         } catch (InterruptedException e) {
+            getConnectionTryCounter++;
+            if (getConnectionTryCounter == 3){
+                getConnectionTryCounter = 0;
+                throw new GetConnectionFromPoolException("Cannot get connection to database. Try again.");
+            } else {
+                this.getConnection();
+            }
         }
         return connection;
     }

@@ -1,9 +1,8 @@
 package com.chern.controller;
 
-import com.chern.exception.IncorrectPathVariableException;
-import com.chern.exception.NoSuchDataException;
 import com.chern.model.Quest;
 import com.chern.service.QuestService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,19 +11,16 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class QuestController {
+public class QuestRESTController {
 
     private final QuestService questService;
 
-    public QuestController(QuestService questService) {
+    public QuestRESTController(QuestService questService) {
         this.questService = questService;
     }
 
     @GetMapping(value = "/quests/{id}")
     public ResponseEntity getById(@PathVariable long id) {
-        if (id < 0) {
-            throw new IncorrectPathVariableException("Incorrect id(" + id + "): must be more than -1x");
-        }
         return ResponseEntity.ok(questService.getById(id));
     }
 
@@ -38,7 +34,7 @@ public class QuestController {
             , produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity save(@RequestBody Quest quest) {
         Quest saveQuest = questService.save(quest);
-        return ResponseEntity.ok(saveQuest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saveQuest);
     }
 
     @PutMapping(path = "/quests", consumes = MediaType.APPLICATION_JSON_VALUE
@@ -50,18 +46,14 @@ public class QuestController {
 
     @DeleteMapping(value = "/quests/{id}")
     public ResponseEntity deleteById(@PathVariable long id) {
-        if (id < 0) {
-            throw new IncorrectPathVariableException("Incorrect id(" + id + "): must be more than -1x");
-        }
-        return ResponseEntity.ok(questService.deleteById(id));
+        questService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(value = "/quests")
     public ResponseEntity delete(@RequestBody List<Long> ids) {
-        if (ids.size() == 0) {
-            throw new NoSuchDataException("There are no quests selected for removing");
-        }
-        return ResponseEntity.ok(questService.delete(ids) + " quest(-s) were removed");
+        questService.delete(ids);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(value = "/quests/search")

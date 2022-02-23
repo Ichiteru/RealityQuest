@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,7 +55,7 @@ public class QuestService {
             List<Quest> quests = questRepository.getAll();
             return quests;
         } catch (EmptyResultDataAccessException ex) {
-            throw new NoSuchDataException("There are no quests in storage");
+            return new ArrayList<>();
         }
     }
 
@@ -117,6 +118,9 @@ public class QuestService {
     }
 
     public int delete(List<Long> ids) {
+        if (ids.size() == 0){
+            return 0;
+        }
         return questRepository.delete(ids);
     }
 
