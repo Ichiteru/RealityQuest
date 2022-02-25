@@ -1,41 +1,29 @@
 package chern.model;
 
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.util.List;
+
+@Entity
+@Table(name = "tag")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Tag {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String name;
-
-    public Tag() {
-    }
-
-    public Tag(long id, String name) {
-        this.id = id;
-        this.name = name;
-
-    }
-
-    @Override
-    public String toString() {
-        return "Tag{" +
-                "id=" + id +
-                ", name='" + name +
-                '}';
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "quest_tag",
+            joinColumns = @JoinColumn(name = "tag_id"),
+            inverseJoinColumns = @JoinColumn(name = "quest_id")
+    )
+    private List<Quest> quests;
 
 }
