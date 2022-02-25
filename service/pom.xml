@@ -26,7 +26,7 @@
 <!--        MODULES-->
         <dependency>
             <groupId>com.chern</groupId>
-            <artifactId>postgres</artifactId>
+            <artifactId>hibernate-realisation</artifactId>
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

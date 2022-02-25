@@ -1,7 +1,7 @@
 package com.chern.validation;
 
+import chern.model.Quest;
 import com.chern.exception.IncorrectDataException;
-import com.chern.model.Quest;
 import org.springframework.stereotype.Component;
 
 @Component

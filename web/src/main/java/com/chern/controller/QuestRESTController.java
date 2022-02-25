@@ -1,6 +1,6 @@
 package com.chern.controller;
 
-import com.chern.model.Quest;
+import chern.model.Quest;
 import com.chern.service.QuestService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
