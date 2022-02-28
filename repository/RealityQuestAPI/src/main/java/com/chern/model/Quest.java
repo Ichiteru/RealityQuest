@@ -1,4 +1,4 @@
-package chern.model;
+package com.chern.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "quest")
@@ -36,5 +37,6 @@ public class Quest {
            inverseJoinColumns = @JoinColumn(name = "tag_id")
    )
    private List<Tag> tags;
-
+   @OneToMany(mappedBy = "quest")
+   private Set<Order> orders;
 }

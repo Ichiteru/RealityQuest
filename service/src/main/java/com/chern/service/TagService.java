@@ -1,7 +1,7 @@
 package com.chern.service;
 
-import chern.model.Tag;
-import chern.repo.TagRepository;
+import com.chern.model.Tag;
+import com.chern.repo.TagRepository;
 import com.chern.exception.DuplicateFieldException;
 import com.chern.exception.NoSuchDataException;
 import com.chern.validation.Validator;

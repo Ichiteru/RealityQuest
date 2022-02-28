@@ -1,8 +1,8 @@
-package chern.model.builder;
+package com.chern.model.builder;
 
 
-import chern.model.Quest;
-import chern.model.Tag;
+import com.chern.model.Quest;
+import com.chern.model.Tag;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

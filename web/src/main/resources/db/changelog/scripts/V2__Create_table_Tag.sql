@@ -1,6 +1,6 @@
 create table tag
 (
-    id   serial
+    id   bigserial
         primary key,
     name varchar
 );

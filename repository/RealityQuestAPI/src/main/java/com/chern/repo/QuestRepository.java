@@ -1,6 +1,6 @@
-package chern.repo;
+package com.chern.repo;
 
-import chern.model.Quest;
+import com.chern.model.Quest;
 
 import java.util.List;
 

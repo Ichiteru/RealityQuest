@@ -1,8 +1,7 @@
 package com.chern.repo;
 
-import chern.model.Quest;
-import chern.model.Tag;
-import chern.repo.QuestTagRepository;
+import com.chern.model.Quest;
+import com.chern.model.Tag;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

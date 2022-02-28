@@ -1,4 +1,4 @@
-package chern.model;
+package com.chern.model;
 
 
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 create table quest
 (
-    id                serial
+    id                bigserial
         primary key,
     name              varchar,
     genre             varchar,

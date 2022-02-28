@@ -1,9 +1,8 @@
 package com.chern.repo;
 
 
-import chern.model.Tag;
-import chern.model.builder.TagBuilder;
-import chern.repo.TagRepository;
+import com.chern.model.Tag;
+import com.chern.model.builder.TagBuilder;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;

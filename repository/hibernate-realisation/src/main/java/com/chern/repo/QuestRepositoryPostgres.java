@@ -1,9 +1,8 @@
 package com.chern.repo;
 
-import com.chern.mapper.QuestRowMapper;
-import chern.model.Quest;
-import chern.model.builder.QuestBuilder;
-import chern.repo.QuestRepository;
+import com.chern.model.Quest;
+import com.chern.model.builder.QuestBuilder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -13,7 +12,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
@@ -22,15 +26,12 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@RequiredArgsConstructor
 public class QuestRepositoryPostgres implements QuestRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    public QuestRepositoryPostgres(DataSource dataSource) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
-    }
+    private final EntityManager entityManager;
 
     @Override
     public Quest save(Quest quest) {
@@ -56,9 +57,17 @@ public class QuestRepositoryPostgres implements QuestRepository {
 
     @Override
     public Quest getById(long id) throws EmptyResultDataAccessException {
-        String query = "select * from quest where id=?";
-        Quest quest = jdbcTemplate.queryForObject(query, new QuestRowMapper(), id);
-        return quest;
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Quest> query = criteriaBuilder.createQuery(Quest.class);
+
+        Root<Quest> quest = query.from(Quest.class);
+        Predicate idPredicate = criteriaBuilder.equal(quest.get("id"), id);
+        query.where(idPredicate);
+        TypedQuery<Quest> questById = entityManager.createQuery(query);
+        return questById.getSingleResult();
+//        String query = "select * from quest where id=?";
+//        Quest quest = jdbcTemplate.queryForObject(query, new QuestRowMapper(), id);
+//        return quest;
     }
 
     @Override

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <includeAll path="db/changelog/scripts/"/>
+<!--    <changeSet id="V1" author="chern">-->
+<!--        <sqlFile path="db/changelog/scripts/V1__Create_table.sql"/>-->
+<!--        <sqlFile path="db/changelog/scripts/V2__Create_table_Tag.sql"/>-->
+<!--        <sqlFile path="db/changelog/scripts/V3__Create_table_QuestTag.sql"/>-->
+<!--        <sqlFile path="db/changelog/scripts/V4__Create_function_searchQuestsByParams.sql"/>-->
+<!--    </changeSet>-->
+</databaseChangeLog>

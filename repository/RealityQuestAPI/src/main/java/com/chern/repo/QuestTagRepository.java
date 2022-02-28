@@ -1,7 +1,7 @@
-package chern.repo;
+package com.chern.repo;
 
-import chern.model.Quest;
-import chern.model.Tag;
+import com.chern.model.Quest;
+import com.chern.model.Tag;
 
 import java.util.List;
 

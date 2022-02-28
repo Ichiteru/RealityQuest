@@ -1,6 +1,6 @@
 package com.chern.controller;
 
-import chern.model.Tag;
+import com.chern.model.Tag;
 import com.chern.exception.NoSuchDataException;
 import com.chern.service.TagService;
 import org.springframework.http.HttpStatus;

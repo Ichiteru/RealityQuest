@@ -1,7 +1,7 @@
 package com.chern.mapper;
 
 
-import chern.model.Quest;
+import com.chern.model.Quest;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

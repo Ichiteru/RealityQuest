@@ -1,10 +1,10 @@
 package com.chern.service;
 
-import chern.model.Quest;
-import chern.model.Tag;
-import chern.repo.QuestRepository;
-import chern.repo.QuestTagRepository;
-import chern.repo.TagRepository;
+import com.chern.model.Quest;
+import com.chern.model.Tag;
+import com.chern.repo.QuestRepository;
+import com.chern.repo.QuestTagRepository;
+import com.chern.repo.TagRepository;
 import com.chern.exception.DuplicateFieldException;
 import com.chern.exception.NoSuchDataException;
 import com.chern.util.SearchQueryBuilder;

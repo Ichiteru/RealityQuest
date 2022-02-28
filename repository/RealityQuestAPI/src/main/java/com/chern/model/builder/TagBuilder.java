@@ -1,6 +1,6 @@
-package chern.model.builder;
+package com.chern.model.builder;
 
-import chern.model.Tag;
+import com.chern.model.Tag;
 
 public final class TagBuilder {
     private long id;

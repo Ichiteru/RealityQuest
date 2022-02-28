@@ -1,8 +1,8 @@
 package com.chern.mapper;
 
 
-import chern.model.Tag;
-import chern.model.builder.TagBuilder;
+import com.chern.model.Tag;
+import com.chern.model.builder.TagBuilder;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;

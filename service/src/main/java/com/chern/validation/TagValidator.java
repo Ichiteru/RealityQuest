@@ -1,6 +1,6 @@
 package com.chern.validation;
 
-import chern.model.Tag;
+import com.chern.model.Tag;
 import com.chern.exception.IncorrectDataException;
 import org.springframework.stereotype.Component;
 
