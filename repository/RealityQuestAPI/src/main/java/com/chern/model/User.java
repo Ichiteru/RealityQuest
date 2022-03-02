@@ -16,10 +16,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
+    private String username;
     private String name;
     private String surname;
     private String email;
-    private String password;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
@@ -27,6 +27,6 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<Order> orders;
 }

@@ -6,7 +6,7 @@ create table usr
     name     varchar not null,
     surname  varchar not null,
     email    varchar not null,
-    password varchar not null
+    username varchar not null
 );
 
 create unique index usr_email_uindex
@@ -18,6 +18,6 @@ create unique index usr_id_uindex
 create unique index usr_name_surname_uindex
     on usr (name, surname);
 
-create unique index usr_password_uindex
-    on usr (password);
+create unique index username_uindex
+    on usr (username);
 
