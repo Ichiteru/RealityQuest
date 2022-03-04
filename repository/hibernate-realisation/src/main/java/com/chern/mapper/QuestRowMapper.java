@@ -15,7 +15,7 @@ public class QuestRowMapper implements RowMapper<Quest> {
         quest.setName(rs.getString("name"));
         quest.setDescription(rs.getString("description"));
         quest.setGenre(rs.getString("genre"));
-        quest.setPrice(rs.getDouble("price"));
+        quest.setPrice(rs.getBigDecimal("price"));
         quest.setDuration(rs.getTime("duration").toLocalTime());
         quest.setCreationDate(rs.getDate("creation_date").toLocalDate());
         quest.setModificationDate(rs.getDate("modification_date").toLocalDate());

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -22,7 +23,7 @@ public class Quest {
    private String name;
    private String description;
    private String genre;
-   private double price;
+   private BigDecimal price;
    private LocalTime duration;
    @Column(name = "creation_date")
    private LocalDate creationDate;
@@ -30,7 +31,7 @@ public class Quest {
    private LocalDate modificationDate;
    @Column(name = "max_people")
    private int maxPeople;
-   @ManyToMany(fetch = FetchType.EAGER)
+   @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
    @JoinTable(
            name = "quest_tag",
            joinColumns = @JoinColumn(name = "quest_id"),

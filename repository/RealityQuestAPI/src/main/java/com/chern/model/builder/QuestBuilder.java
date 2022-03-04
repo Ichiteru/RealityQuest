@@ -4,6 +4,7 @@ package com.chern.model.builder;
 import com.chern.model.Quest;
 import com.chern.model.Tag;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -83,7 +84,7 @@ public final class QuestBuilder {
         quest.setName(name);
         quest.setDescription(description);
         quest.setGenre(genre);
-        quest.setPrice(price);
+        quest.setPrice(BigDecimal.valueOf(price));
         quest.setDuration(duration);
         quest.setCreationDate(creationDate);
         quest.setModificationDate(modificationDate);

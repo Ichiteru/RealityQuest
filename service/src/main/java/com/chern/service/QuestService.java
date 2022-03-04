@@ -65,12 +65,12 @@ public class QuestService {
         quest.setCreationDate(LocalDate.now());
         quest.setModificationDate(LocalDate.now());
         quest = questRepository.save(quest);
-        if (quest.getTags() != null) {
-            quest.getTags().forEach(tag -> tagValidator.validate(tag));
-            List<Tag> tags = getUpdatedTags(quest.getTags());
-            questTagRepository.bindQuestWithTags(quest, tags);
-            quest.setTags(tags);
-        }
+//        if (quest.getTags() != null) {
+//            quest.getTags().forEach(tag -> tagValidator.validate(tag));
+//            List<Tag> tags = getUpdatedTags(quest.getTags());
+//            questTagRepository.bindQuestWithTags(quest, tags);
+//            quest.setTags(tags);
+//        }
         return quest;
     }
 

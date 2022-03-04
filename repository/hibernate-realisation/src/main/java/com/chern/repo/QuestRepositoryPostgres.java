@@ -35,23 +35,24 @@ public class QuestRepositoryPostgres implements QuestRepository {
 
     @Override
     public Quest save(Quest quest) {
-        String query = "insert into quest (name, genre, price, description, duration, creation_date," +
-                " modification_date, max_people) " +
-                "values (?, ?, ?, ?, ?, ?, ?, ?) returning id";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            ps.setString(1, quest.getName());
-            ps.setString(2, quest.getGenre());
-            ps.setBigDecimal(3, BigDecimal.valueOf(quest.getPrice()));
-            ps.setString(4, quest.getDescription());
-            ps.setTime(5, Time.valueOf(quest.getDuration()));
-            ps.setDate(6, Date.valueOf(quest.getCreationDate()));
-            ps.setDate(7, Date.valueOf(quest.getModificationDate()));
-            ps.setInt(8, quest.getMaxPeople());
-            return ps;
-        }, keyHolder);
-        quest.setId(keyHolder.getKey().longValue());
+        entityManager.persist(quest);
+//        String query = "insert into quest (name, genre, price, description, duration, creation_date," +
+//                " modification_date, max_people) " +
+//                "values (?, ?, ?, ?, ?, ?, ?, ?) returning id";
+//        KeyHolder keyHolder = new GeneratedKeyHolder();
+//        jdbcTemplate.update(con -> {
+//            PreparedStatement ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+//            ps.setString(1, quest.getName());
+//            ps.setString(2, quest.getGenre());
+//            ps.setBigDecimal(3, BigDecimal.valueOf(quest.getPrice()));
+//            ps.setString(4, quest.getDescription());
+//            ps.setTime(5, Time.valueOf(quest.getDuration()));
+//            ps.setDate(6, Date.valueOf(quest.getCreationDate()));
+//            ps.setDate(7, Date.valueOf(quest.getModificationDate()));
+//            ps.setInt(8, quest.getMaxPeople());
+//            return ps;
+//        }, keyHolder);
+//        quest.setId(keyHolder.getKey().longValue());
         return quest;
     }
 
@@ -103,7 +104,7 @@ public class QuestRepositoryPostgres implements QuestRepository {
                 PreparedStatement ps = con.prepareStatement(query);
                 ps.setString(1, quest.getName());
                 ps.setString(2, quest.getGenre());
-                ps.setBigDecimal(3, BigDecimal.valueOf(quest.getPrice()));
+                ps.setBigDecimal(3, quest.getPrice());
                 ps.setString(4, quest.getDescription());
                 ps.setTime(5, Time.valueOf(quest.getDuration()));
                 ps.setDate(6, Date.valueOf(quest.getModificationDate()));

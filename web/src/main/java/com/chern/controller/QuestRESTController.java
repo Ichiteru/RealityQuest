@@ -32,17 +32,14 @@ public class QuestRESTController {
     }
 
     @GetMapping(value = "/quests")
-    @PreAuthorize("hasAuthority('SCOPE_openid')")
     public ResponseEntity getAll() {
-
-        // PreAuthorize works with authentication.authorities!!!!
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<Quest> quests = questService.getAll();
         return ResponseEntity.ok().body(quests);
     }
 
     @PostMapping(path = "/quests", consumes = MediaType.APPLICATION_JSON_VALUE
             , produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
     public ResponseEntity save(@RequestBody Quest quest) {
         Quest saveQuest = questService.save(quest);
         return ResponseEntity.status(HttpStatus.CREATED).body(saveQuest);
@@ -50,6 +47,7 @@ public class QuestRESTController {
 
     @PutMapping(path = "/quests", consumes = MediaType.APPLICATION_JSON_VALUE
             , produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
     public ResponseEntity update(@RequestBody Quest quest) {
         Quest updatedQuest = questService.update(quest);
         return ResponseEntity.ok(updatedQuest);
