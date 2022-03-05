@@ -1,15 +1,14 @@
 package com.chern.service;
 
+import com.chern.exception.NoSuchDataException;
 import com.chern.model.Quest;
 import com.chern.model.Tag;
 import com.chern.repo.QuestRepository;
 import com.chern.repo.QuestTagRepository;
 import com.chern.repo.TagRepository;
-import com.chern.exception.DuplicateFieldException;
-import com.chern.exception.NoSuchDataException;
 import com.chern.util.SearchQueryBuilder;
 import com.chern.validation.Validator;
-import org.springframework.dao.DuplicateKeyException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class QuestService {
 
     private final QuestTagRepository questTagRepository;
@@ -29,30 +29,18 @@ public class QuestService {
     private final Validator<Quest> questValidator;
     private final Validator<Tag> tagValidator;
 
-    public QuestService(QuestTagRepository questTagRepository, QuestRepository questRepository, TagRepository tagRepository, Validator<Quest> questValidator, Validator<Tag> tagValidator) {
-        this.questTagRepository = questTagRepository;
-        this.questRepository = questRepository;
-        this.tagRepository = tagRepository;
-        this.questValidator = questValidator;
-        this.tagValidator = tagValidator;
-    }
-
-
     public Quest getById(long id) {
         try {
             Quest quest = questRepository.getById(id);
-            if (tagRepository.existsByQuestId(id).booleanValue()) {
-                quest.setTags(tagRepository.getByQuestId(id));
-            }
             return quest;
         } catch (EmptyResultDataAccessException ex) {
             throw new NoSuchDataException("This quest doesn't exist");
         }
     }
 
-    public List<Quest> getAll() {
+    public List<Quest> getAll(int page, int size) {
         try {
-            List<Quest> quests = questRepository.getAll();
+            List<Quest> quests = questRepository.getAll(page, size);
             return quests;
         } catch (EmptyResultDataAccessException ex) {
             return new ArrayList<>();
@@ -64,36 +52,32 @@ public class QuestService {
         questValidator.validate(quest);
         quest.setCreationDate(LocalDate.now());
         quest.setModificationDate(LocalDate.now());
+        List<Tag> tags = quest.getTags();
+        if (tags != null) {
+            tags.forEach(tag -> tagValidator.validate(tag));
+            Map<Boolean, List<Tag>> derivedTags = tags.stream()
+                    .collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
+            List<Tag> newTags = derivedTags.get(true);
+            tagRepository.save(newTags);
+        }
         quest = questRepository.save(quest);
-//        if (quest.getTags() != null) {
-//            quest.getTags().forEach(tag -> tagValidator.validate(tag));
-//            List<Tag> tags = getUpdatedTags(quest.getTags());
-//            questTagRepository.bindQuestWithTags(quest, tags);
-//            quest.setTags(tags);
-//        }
         return quest;
     }
 
     @Transactional
     public Quest update(Quest quest) {
-        if (!questRepository.existsById(quest.getId())){
+        if (!questRepository.existsById(quest.getId())) {
             throw new NoSuchDataException("There is no quest with this id(" + quest.getId() + ")");
         }
         questValidator.validate(quest);
         quest.setModificationDate(LocalDate.now());
-        quest = questRepository.update(quest);
         List<Tag> tags = quest.getTags();
-        if (tags != null) {
-            tags.forEach(tag -> tagValidator.validate(tag));
-            tags = getUpdatedTags(tags);
-            questTagRepository.unbindQuestTags(quest, tags);
-            questTagRepository.bindQuestWithTags(quest, tags);
-        } else {
-            questTagRepository.unbindAllQuestTags(quest);
-        }
+        questRepository.update(quest);
+        tags.forEach(tag -> tagValidator.validate(tag));
         return quest;
     }
 
+    @Transactional
     public long deleteById(long id) {
         if (!questRepository.existsById(id).booleanValue()) {
             throw new NoSuchDataException("Quest with id = " + id + " doesn't exists");
@@ -101,24 +85,9 @@ public class QuestService {
         return questRepository.deleteById(id);
     }
 
-    private List<Tag> getUpdatedTags(List<Tag> tags) {
-        Map<Boolean, List<Tag>> derivedTags = tags.stream()
-                .collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
-        List<Tag> oldTags = derivedTags.get(false);
-        List<Tag> newTags = derivedTags.get(true);
-        if (newTags != null) {
-            try {
-                newTags = tagRepository.save(newTags);
-            } catch (DuplicateKeyException ex){
-                throw new DuplicateFieldException("Tag with some of this names already exists");
-            }
-            oldTags.addAll(newTags);
-        }
-        return oldTags;
-    }
-
+    @Transactional
     public int delete(List<Long> ids) {
-        if (ids.size() == 0){
+        if (ids.size() == 0) {
             return 0;
         }
         return questRepository.delete(ids);
@@ -126,7 +95,7 @@ public class QuestService {
 
     public List<Quest> searchBy(String tagName, String namePart,
                                 String descriptionPart, String sortBy, String sortType) {
-        String query = SearchQueryBuilder.buildSearchQuery(tagName,namePart,descriptionPart,sortBy,sortType);
+        String query = SearchQueryBuilder.buildSearchQuery(tagName, namePart, descriptionPart, sortBy, sortType);
         return questRepository.searchByParams(query);
     }
 }

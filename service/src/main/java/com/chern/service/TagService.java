@@ -8,6 +8,7 @@ import com.chern.validation.Validator;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class TagService {
         }
     }
 
+    @Transactional
     public List<Tag> save(List<Tag> tags) {
         tags.forEach(tag -> tagValidator.validate(tag));
         try {

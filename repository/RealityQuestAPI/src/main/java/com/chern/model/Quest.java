@@ -31,7 +31,7 @@ public class Quest {
    private LocalDate modificationDate;
    @Column(name = "max_people")
    private int maxPeople;
-   @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL})
+   @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE})
    @JoinTable(
            name = "quest_tag",
            joinColumns = @JoinColumn(name = "quest_id"),

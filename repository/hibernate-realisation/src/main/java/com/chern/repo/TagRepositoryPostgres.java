@@ -3,6 +3,7 @@ package com.chern.repo;
 
 import com.chern.model.Tag;
 import com.chern.model.builder.TagBuilder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -10,6 +11,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,15 +25,12 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
+@RequiredArgsConstructor
 public class TagRepositoryPostgres implements TagRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    public TagRepositoryPostgres(DataSource dataSource, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.jdbcTemplate = new JdbcTemplate(dataSource);
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-    }
+    private final EntityManager entityManager;
 
     @Override
     public List<Tag> getByQuestId(long id) {
@@ -60,23 +62,7 @@ public class TagRepositoryPostgres implements TagRepository {
 
     @Override
     public List<Tag> save(List<Tag> tags) throws DuplicateKeyException {
-        String query = "insert into tag (id, name) values (?, ?)";
-        jdbcTemplate.batchUpdate(query, new BatchPreparedStatementSetter(){
-
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Tag tag = tags.get(i);
-                long id = (long) (Math.random() * 100000);
-                tags.get(i).setId(id);
-                ps.setLong(1, id);
-                ps.setString(2, tag.getName());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return tags.size();
-            }
-        });
+        tags.forEach(tag -> entityManager.persist(tag));
         return tags;
     }
 

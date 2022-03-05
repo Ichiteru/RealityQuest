@@ -32,33 +32,36 @@ public class QuestRESTController {
     }
 
     @GetMapping(value = "/quests")
-    public ResponseEntity getAll() {
-        List<Quest> quests = questService.getAll();
+    public ResponseEntity getAll(@RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "10") int size) {
+        List<Quest> quests = questService.getAll(page, size);
         return ResponseEntity.ok().body(quests);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
     @PostMapping(path = "/quests", consumes = MediaType.APPLICATION_JSON_VALUE
             , produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
     public ResponseEntity save(@RequestBody Quest quest) {
         Quest saveQuest = questService.save(quest);
         return ResponseEntity.status(HttpStatus.CREATED).body(saveQuest);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
     @PutMapping(path = "/quests", consumes = MediaType.APPLICATION_JSON_VALUE
             , produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
     public ResponseEntity update(@RequestBody Quest quest) {
         Quest updatedQuest = questService.update(quest);
         return ResponseEntity.ok(updatedQuest);
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
     @DeleteMapping(value = "/quests/{id}")
     public ResponseEntity deleteById(@PathVariable long id) {
         questService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
     @DeleteMapping(value = "/quests")
     public ResponseEntity delete(@RequestBody List<Long> ids) {
         questService.delete(ids);
