@@ -24,7 +24,7 @@ import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
-public class QuestRepositoryPostgres implements QuestRepository {
+public class QuestRepositoryCriteria implements QuestRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final EntityManager entityManager;
@@ -96,7 +96,6 @@ public class QuestRepositoryPostgres implements QuestRepository {
         CriteriaDelete<Quest> criteriaDelete = criteriaBuilder.createCriteriaDelete(Quest.class);
         Root<Quest> from = criteriaDelete.from(Quest.class);
         criteriaDelete.where(from.get("id").in(ids));
-        entityManager.createQuery(criteriaDelete).executeUpdate();
         return entityManager.createQuery(criteriaDelete).executeUpdate();
     }
 

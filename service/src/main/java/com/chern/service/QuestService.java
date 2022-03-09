@@ -54,10 +54,10 @@ public class QuestService {
         quest.setModificationDate(LocalDate.now());
         List<Tag> tags = quest.getTags();
         if (tags != null) {
-            tags.forEach(tag -> tagValidator.validate(tag));
             Map<Boolean, List<Tag>> derivedTags = tags.stream()
                     .collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
             List<Tag> newTags = derivedTags.get(true);
+            newTags.forEach(tag -> tagValidator.validate(tag));
             tagRepository.save(newTags);
         }
         quest = questRepository.save(quest);

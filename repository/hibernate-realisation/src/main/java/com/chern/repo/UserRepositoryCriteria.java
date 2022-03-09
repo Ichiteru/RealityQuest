@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class UserRepositoryPostgres implements UserRepository{
+public class UserRepositoryCriteria implements UserRepository{
 
     private final EntityManager entityManager;
 

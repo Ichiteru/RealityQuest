@@ -4,7 +4,7 @@ create table quest
         primary key,
     name              varchar,
     genre             varchar,
-    price             money,
+    price             double precision,
     description       varchar,
     duration          time,
     creation_date     date,

@@ -12,7 +12,7 @@ public class QuestValidator implements Validator<Quest>{
         if (quest.getName().equals("") || quest.getName().equals(null)){
             throw new IncorrectDataException("Empty quest name");
         }
-        if (quest.getPrice().longValue() < 0){
+        if (quest.getPrice() < 0){
             throw new IncorrectDataException("Incorrect price(must be more than 0)");
         }
         if (quest.getName().equals("") || quest.getName().equals(null)){

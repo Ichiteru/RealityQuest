@@ -1,8 +1,7 @@
 package com.chern.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -16,6 +15,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = {"tags"})
 public class Quest {
    @Id
    @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,7 +23,7 @@ public class Quest {
    private String name;
    private String description;
    private String genre;
-   private BigDecimal price;
+   private double price;
    private LocalTime duration;
    @Column(name = "creation_date")
    private LocalDate creationDate;
@@ -37,7 +37,10 @@ public class Quest {
            joinColumns = @JoinColumn(name = "quest_id"),
            inverseJoinColumns = @JoinColumn(name = "tag_id")
    )
+   @ToString.Exclude
+   @JsonIgnoreProperties("quests")
    private List<Tag> tags;
+   @ToString.Exclude
    @OneToMany(mappedBy = "quest")
    private Set<Order> orders;
 }

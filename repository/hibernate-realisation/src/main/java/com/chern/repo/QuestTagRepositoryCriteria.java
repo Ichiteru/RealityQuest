@@ -16,12 +16,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
-public class QuestTagRepositoryPostgres implements QuestTagRepository {
+public class QuestTagRepositoryCriteria implements QuestTagRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    public QuestTagRepositoryPostgres(DataSource dataSource, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public QuestTagRepositoryCriteria(DataSource dataSource, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }

@@ -1,8 +1,10 @@
 package com.chern.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -13,6 +15,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = {"quests"})
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,6 +27,7 @@ public class Tag {
             joinColumns = @JoinColumn(name = "tag_id"),
             inverseJoinColumns = @JoinColumn(name = "quest_id")
     )
+    @JsonIgnoreProperties("tags")
     private List<Quest> quests;
 
 }

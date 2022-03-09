@@ -50,6 +50,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             }
 
             // need to save user in db if new
+            System.out.println("WORK OF JWT TOKEN FILTER");
             if (!userService.existsByUsername(keyCloakToken.getPreferredUsername())){
                 User user = UserBuilder.anUser()
                         .withName(keyCloakToken.getGivenName())

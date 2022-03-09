@@ -1,10 +1,13 @@
 package com.chern.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -13,19 +16,22 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "quest_user")
+@EqualsAndHashCode(exclude = {"quest", "user"})
 public class Order {
 
-    @EmbeddedId
-    private UserQuestKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 
-    @ManyToOne
-    @MapsId("userId")
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
+
+    @JsonIgnoreProperties("orders")
     private User user;
 
-    @ManyToOne
-    @MapsId("questId")
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "quest_id")
+    @JsonIgnoreProperties("orders")
     private Quest quest;
 
     @Column(name = "order_cost")

@@ -26,11 +26,14 @@ public class QuestRESTController {
         this.questService = questService;
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST', 'ROLE_USER', 'ROLE_OWNER')")
     @GetMapping(value = "/quests/{id}")
     public ResponseEntity getById(@PathVariable long id) {
+
         return ResponseEntity.ok(questService.getById(id));
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST', 'ROLE_USER', 'ROLE_OWNER')")
     @GetMapping(value = "/quests")
     public ResponseEntity getAll(@RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "10") int size) {
@@ -68,6 +71,8 @@ public class QuestRESTController {
         return ResponseEntity.noContent().build();
     }
 
+
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST', 'ROLE_USER', 'ROLE_OWNER')")
     @GetMapping(value = "/quests/search")
     public ResponseEntity search(@RequestParam(required = false, defaultValue = "") String tagName
             , @RequestParam(required = false, defaultValue = "") String namePart

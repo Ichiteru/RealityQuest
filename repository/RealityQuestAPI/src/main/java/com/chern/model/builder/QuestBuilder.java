@@ -84,7 +84,7 @@ public final class QuestBuilder {
         quest.setName(name);
         quest.setDescription(description);
         quest.setGenre(genre);
-        quest.setPrice(BigDecimal.valueOf(price));
+        quest.setPrice(price);
         quest.setDuration(duration);
         quest.setCreationDate(creationDate);
         quest.setModificationDate(modificationDate);
