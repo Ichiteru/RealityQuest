@@ -12,7 +12,8 @@ public final class OrderBuilder {
     private Quest quest;
     private double cost;
     private LocalDateTime purchaseTime;
-    private LocalTime reserveTime;
+    private LocalDateTime reserveTime;
+    private LocalDateTime endTime;
 
     private OrderBuilder() {
     }
@@ -41,8 +42,13 @@ public final class OrderBuilder {
         return this;
     }
 
-    public OrderBuilder withReserveTime(LocalTime reserveTime) {
+    public OrderBuilder withReserveTime(LocalDateTime reserveTime) {
         this.reserveTime = reserveTime;
+        return this;
+    }
+
+    public OrderBuilder withEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
         return this;
     }
 
@@ -53,6 +59,7 @@ public final class OrderBuilder {
         order.setCost(cost);
         order.setPurchaseTime(purchaseTime);
         order.setReserveTime(reserveTime);
+        order.setEndTime(endTime);
         return order;
     }
 }

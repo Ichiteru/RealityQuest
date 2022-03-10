@@ -20,4 +20,6 @@ public interface TagRepository {
     long deleteById(long id);
 
     int delete(List<Long> ids);
+
+    Tag findMostUsedOfTopUser();
 }

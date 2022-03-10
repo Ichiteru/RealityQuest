@@ -16,7 +16,7 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "quest_user")
-@EqualsAndHashCode(exclude = {"quest", "user"})
+@EqualsAndHashCode(exclude = {"quest", "user", "tags"})
 public class Order {
 
     @Id
@@ -41,5 +41,8 @@ public class Order {
     private LocalDateTime purchaseTime;
 
     @Column(name = "reserve_time")
-    private LocalTime reserveTime;
+    private LocalDateTime reserveTime;
+
+    @Column(name = "end_time")
+    private LocalDateTime endTime;
 }

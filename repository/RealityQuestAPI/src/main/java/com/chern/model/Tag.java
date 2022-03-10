@@ -15,7 +15,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"quests"})
+@EqualsAndHashCode(exclude = {"quests", "orders"})
 public class Tag {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

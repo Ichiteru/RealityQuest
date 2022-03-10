@@ -63,4 +63,8 @@ public class TagService {
         }
         return tagRepository.delete(ids);
     }
+
+    public Tag getMostUsedTag(){
+        return tagRepository.findMostUsedOfTopUser();
+    }
 }

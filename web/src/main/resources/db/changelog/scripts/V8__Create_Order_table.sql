@@ -12,5 +12,6 @@ create table quest_user
             on delete cascade,
     order_cost double precision,
     purchase_time timestamp,
-    reserve_time time
+    reserve_time timestamp,
+    end_time timestamp
 )

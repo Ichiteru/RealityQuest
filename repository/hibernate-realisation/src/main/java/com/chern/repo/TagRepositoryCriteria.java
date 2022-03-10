@@ -1,56 +1,24 @@
 package com.chern.repo;
 
 
-import com.chern.model.Quest;
+import com.chern.model.Order;
 import com.chern.model.Tag;
-import com.chern.model.builder.TagBuilder;
+import com.chern.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
-import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
 public class TagRepositoryCriteria implements TagRepository {
 
-    private final JdbcTemplate jdbcTemplate;
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final EntityManager entityManager;
-
-//    @Override
-//    public List<Tag> getByQuestId(long id) {
-//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-//        CriteriaQuery<Quest> query = criteriaBuilder.createQuery(Quest.class);
-//        Root<Quest> questRoot = query.from(Quest.class);
-//        CriteriaQuery<Quest> questById = query.select(questRoot)
-//                .where(criteriaBuilder.equal(questRoot.get("id"), id));
-//        TypedQuery<Quest> result = entityManager.createQuery(questById);
-//        return result.getSingleResult().getTags();
-//    }
-//
-//    @Override
-//    public Boolean existsByQuestId(long id) {
-//        String query = "select exists (select 1 from quest_tag where quest_id=?)";
-//        Boolean aBoolean = jdbcTemplate.queryForObject(query, Boolean.class, id);
-//        return aBoolean;
-//    }
 
     @Override
     public List<Tag> save(List<Tag> tags) throws DuplicateKeyException {
@@ -111,4 +79,45 @@ public class TagRepositoryCriteria implements TagRepository {
         return entityManager.createQuery(criteriaDelete).executeUpdate();
     }
 
+    @Override
+    public Tag findMostUsedOfTopUser() {
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+
+        CriteriaQuery<Tag> tagQuery = builder.createQuery(Tag.class);
+        Root<com.chern.model.Order> tagRoot = tagQuery.from(com.chern.model.Order.class);
+        Join<com.chern.model.Order, Tag> orderTagName = tagRoot.join("quest")
+                .join("tags");
+
+        Subquery<User> userQuery = tagQuery.subquery(User.class);
+        Root<com.chern.model.Order> userRoot = userQuery.from(com.chern.model.Order.class);
+
+        Subquery<BigDecimal> sumQuery = userQuery.subquery(BigDecimal.class);
+        Root<com.chern.model.Order> sumRoot = sumQuery.from(com.chern.model.Order.class);
+        sumQuery.select(builder.sum(sumRoot.get("cost")))
+                .groupBy(sumRoot.get("user"));
+
+        userQuery.select(userRoot.get("user"))
+                .groupBy(userRoot.get("user"))
+                .having(builder.ge(builder.sum(userRoot.get("cost")), builder.all(sumQuery)));
+
+        Subquery<Long> countQuery = tagQuery.subquery(Long.class);
+        Root<com.chern.model.Order> countRoot = countQuery.from(com.chern.model.Order.class);
+        Join<Order, Tag> countTagJoin = countRoot.join("quest")
+                .join("tags");
+
+        countQuery.select(builder.count(countTagJoin))
+                .where(builder.in(countRoot.get("user")).value(userQuery))
+                .groupBy(countTagJoin);
+
+        tagQuery.select(orderTagName)
+                .where(builder.in(tagRoot.get("user")).value(userQuery))
+                .groupBy(orderTagName)
+                .having(builder.ge(builder.count(orderTagName), builder.all(countQuery)));
+        TypedQuery<Tag> result = entityManager.createQuery(tagQuery);
+        List<Tag> resultList = result.getResultList();
+        return resultList.stream()
+                .findFirst()
+                .orElse(null);
+
+    }
 }

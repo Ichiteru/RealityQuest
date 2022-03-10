@@ -2,6 +2,7 @@ package com.chern.controller;
 
 import com.chern.model.Quest;
 import com.chern.service.QuestService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +19,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class QuestRESTController {
 
     private final QuestService questService;
-
-    public QuestRESTController(QuestService questService) {
-        this.questService = questService;
-    }
 
     @PreAuthorize("hasAnyAuthority('ROLE_GUEST', 'ROLE_USER', 'ROLE_OWNER')")
     @GetMapping(value = "/quests/{id}")

@@ -71,4 +71,13 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
                 .withStatus(HttpStatus.NOT_FOUND.value()).withTimestamp(LocalDateTime.now()).build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(QuestReservationException.class)
+    public ResponseEntity<ApiError> handleQuestReservationException(Exception e){
+        ApiError apiError = ApiErrorBuilder.anApiError().withError(e.getMessage())
+                .withStatus(HttpStatus.BAD_REQUEST.value())
+                .withTimestamp(LocalDateTime.now()).build();
+        ResponseEntity<ApiError> responseEntity = new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return responseEntity;
+    }
 }

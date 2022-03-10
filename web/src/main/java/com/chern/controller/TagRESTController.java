@@ -3,6 +3,7 @@ package com.chern.controller;
 import com.chern.model.Tag;
 import com.chern.exception.NoSuchDataException;
 import com.chern.service.TagService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,14 +13,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class TagRESTController {
 
     private final TagService tagService;
-
-    public TagRESTController(TagService tagService) {
-        this.tagService = tagService;
-    }
-
 
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_OWNER')")
     @GetMapping(value = "/tags/{id}")
@@ -55,5 +52,11 @@ public class TagRESTController {
         }
         tagService.delete(ids);
         return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'ROLE_USER')")
+    @GetMapping("/tags/search/mostUsed")
+    public ResponseEntity getMostUsedTag(){
+        return ResponseEntity.ok(tagService.getMostUsedTag());
     }
 }
