@@ -12,8 +12,8 @@
     <artifactId>repository</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>RealityQuestAPI</module>
-        <module>hibernate-realisation</module>
+        <module>api</module>
+        <module>hibernate</module>
     </modules>
 
     <properties>

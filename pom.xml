@@ -28,9 +28,8 @@
     </properties>
 
     <modules>
-        <module>web</module>
+        <module>app</module>
         <module>service</module>
-        <module>validation</module>
         <module>repository</module>
     </modules>
 

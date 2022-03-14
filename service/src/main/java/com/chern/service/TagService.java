@@ -5,6 +5,7 @@ import com.chern.repo.TagRepository;
 import com.chern.exception.DuplicateFieldException;
 import com.chern.exception.NoSuchDataException;
 import com.chern.validation.Validator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -16,8 +17,10 @@ import java.util.List;
 @Service
 public class TagService {
 
-    private final TagRepository tagRepository;
-    private final Validator<Tag> tagValidator;
+    @Autowired
+    private TagRepository tagRepository;
+    @Autowired
+    private Validator<Tag> tagValidator;
 
     public TagService(TagRepository tagRepository, Validator<Tag> tagValidator) {
         this.tagRepository = tagRepository;

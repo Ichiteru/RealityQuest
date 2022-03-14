@@ -5,11 +5,10 @@ import com.chern.exception.QuestReservationException;
 import com.chern.model.Order;
 import com.chern.model.Quest;
 import com.chern.model.User;
-import com.chern.model.builder.OrderBuilder;
 import com.chern.repo.OrderRepository;
 import com.chern.repo.QuestRepository;
 import com.chern.repo.UserRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,12 +19,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 public class OrderService {
 
-    private final UserRepository userRepository;
-    private final OrderRepository orderRepository;
-    private final QuestRepository questRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private QuestRepository questRepository;
 
     @Transactional
     public Order save(String username, long questId, LocalDateTime reservationTime) {
@@ -43,13 +44,13 @@ public class OrderService {
         LocalDateTime endTime = reservationTime.plusHours(quest.getDuration().getHour())
                 .plusMinutes(quest.getDuration().getMinute())
                 .plusSeconds(quest.getDuration().getSecond());
-        Order order = OrderBuilder.anOrder()
-                .withQuest(quest)
-                .withUser(userByUsername.get())
-                .withPurchaseTime(LocalDateTime.now())
-                .withCost(quest.getPrice())
-                .withReserveTime(reservationTime)
-                .withEndTime(endTime).build();
+        Order order = Order.builder()
+                .quest(quest)
+                .user(userByUsername.get())
+                .purchaseTime(LocalDateTime.now())
+                .cost(quest.getPrice())
+                .reserveTime(reservationTime)
+                .endTime(endTime).build();
 
         Order save = orderRepository.save(order);
 

@@ -4,11 +4,9 @@ import com.chern.exception.NoSuchDataException;
 import com.chern.model.Quest;
 import com.chern.model.Tag;
 import com.chern.repo.QuestRepository;
-import com.chern.repo.QuestTagRepository;
 import com.chern.repo.TagRepository;
-import com.chern.util.SearchQueryBuilder;
 import com.chern.validation.Validator;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,14 +18,16 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class QuestService {
 
-    private final QuestTagRepository questTagRepository;
-    private final QuestRepository questRepository;
-    private final TagRepository tagRepository;
-    private final Validator<Quest> questValidator;
-    private final Validator<Tag> tagValidator;
+    @Autowired
+    private QuestRepository questRepository;
+    @Autowired
+    private TagRepository tagRepository;
+    @Autowired
+    private Validator<Quest> questValidator;
+    @Autowired
+    private Validator<Tag> tagValidator;
 
     public Quest getById(long id) {
         try {
@@ -93,9 +93,9 @@ public class QuestService {
         return questRepository.delete(ids);
     }
 
-    public List<Quest> searchBy(String tagName, String namePart,
-                                String descriptionPart, String sortBy, String sortType) {
-        String query = SearchQueryBuilder.buildSearchQuery(tagName, namePart, descriptionPart, sortBy, sortType);
-        return questRepository.searchByParams(query);
-    }
+//    public List<Quest> searchBy(String tagName, String namePart,
+//                                String descriptionPart, String sortBy, String sortType) {
+//        String query = SearchQueryBuilder.buildSearchQuery(tagName, namePart, descriptionPart, sortBy, sortType);
+//        return questRepository.searchByParams(query);
+//    }
 }

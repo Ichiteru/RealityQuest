@@ -1,0 +1,9 @@
+rootProject.name = 'gradle-nultimodule-test'
+include 'repository'
+include 'repository:api'
+findProject(':repository:api')?.name = 'api'
+include 'repository:hibernate'
+findProject(':repository:hibernate')?.name = 'hibernate'
+include 'service'
+include 'app'
+
