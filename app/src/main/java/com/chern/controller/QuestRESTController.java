@@ -1,5 +1,8 @@
 package com.chern.controller;
 
+import com.chern.dto.NewQuestDTO;
+import com.chern.dto.TabularQuestDTO;
+import com.chern.dto.converter.Converter;
 import com.chern.model.Quest;
 import com.chern.service.QuestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +26,12 @@ public class QuestRESTController {
 
     @Autowired
     private QuestService questService;
+    @Autowired
+    private Converter<NewQuestDTO, Quest> newQuestConverter;
 
     @PreAuthorize("hasAnyAuthority('ROLE_GUEST', 'ROLE_USER', 'ROLE_OWNER')")
     @GetMapping(value = "/quests/{id}")
     public ResponseEntity getById(@PathVariable long id) {
-
         return ResponseEntity.ok(questService.getById(id));
     }
 
@@ -35,15 +39,15 @@ public class QuestRESTController {
     @GetMapping(value = "/quests")
     public ResponseEntity getAll(@RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "10") int size) {
-        List<Quest> quests = questService.getAll(page, size);
+        List<TabularQuestDTO> quests = questService.getAll(page, size);
         return ResponseEntity.ok().body(quests);
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
     @PostMapping(path = "/quests", consumes = MediaType.APPLICATION_JSON_VALUE
             , produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity save(@RequestBody Quest quest) {
-        Quest saveQuest = questService.save(quest);
+    public ResponseEntity save(@RequestBody NewQuestDTO quest) {
+        Quest saveQuest = questService.save(newQuestConverter.dtoToEntityConverter(quest));
         return ResponseEntity.status(HttpStatus.CREATED).body(saveQuest);
     }
 

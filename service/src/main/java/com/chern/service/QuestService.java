@@ -1,5 +1,9 @@
 package com.chern.service;
 
+import com.chern.dto.FullInfoQuestDTO;
+import com.chern.dto.TabularQuestDTO;
+import com.chern.dto.converter.Converter;
+import com.chern.dto.converter.TabularQuestConverter;
 import com.chern.exception.NoSuchDataException;
 import com.chern.model.Quest;
 import com.chern.model.Tag;
@@ -28,20 +32,29 @@ public class QuestService {
     private Validator<Quest> questValidator;
     @Autowired
     private Validator<Tag> tagValidator;
+    @Autowired
+    private Converter<TabularQuestDTO, Quest> tabularQuestConverter;
+    @Autowired
+    private Converter<FullInfoQuestDTO, Quest> infoQuestConverter;
 
-    public Quest getById(long id) {
+    public FullInfoQuestDTO getById(long id) {
         try {
             Quest quest = questRepository.getById(id);
-            return quest;
+            FullInfoQuestDTO fullInfoQuestDTO = infoQuestConverter.entityToDtoConverter(quest);
+            return fullInfoQuestDTO;
         } catch (EmptyResultDataAccessException ex) {
             throw new NoSuchDataException("This quest doesn't exist");
         }
     }
 
-    public List<Quest> getAll(int page, int size) {
+    public List<TabularQuestDTO> getAll(int page, int size) {
         try {
             List<Quest> quests = questRepository.getAll(page, size);
-            return quests;
+            List<TabularQuestDTO> tabularQuests =
+                    quests.stream()
+                            .map(quest -> tabularQuestConverter.entityToDtoConverter(quest))
+                            .collect(Collectors.toList());
+            return tabularQuests;
         } catch (EmptyResultDataAccessException ex) {
             return new ArrayList<>();
         }
