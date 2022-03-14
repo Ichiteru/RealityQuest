@@ -1,5 +1,7 @@
 package com.chern.service;
 
+import com.chern.dto.TabularOrderDTO;
+import com.chern.dto.converter.Converter;
 import com.chern.exception.NoSuchDataException;
 import com.chern.exception.QuestReservationException;
 import com.chern.model.Order;
@@ -13,10 +15,10 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -27,6 +29,8 @@ public class OrderService {
     private OrderRepository orderRepository;
     @Autowired
     private QuestRepository questRepository;
+    @Autowired
+    private Converter<TabularOrderDTO, Order> tabularOrderConverter;
 
     @Transactional
     public Order save(String username, long questId, LocalDateTime reservationTime) {
@@ -58,9 +62,13 @@ public class OrderService {
         return order;
     }
 
-    public List<Order> getAll(int page, int size) {
+    public List<TabularOrderDTO> getAll(int page, int size) {
         try{
-            return orderRepository.getAll(page,size);
+            List<Order> orders = orderRepository.getAll(page, size);
+            List<TabularOrderDTO> dtoList = orders.stream()
+                    .map(order -> tabularOrderConverter.entityToDtoConverter(order))
+                    .collect(Collectors.toList());
+            return dtoList;
         } catch (EmptyResultDataAccessException ex){
             return new ArrayList<>();
         }
