@@ -1,4 +1,4 @@
-rootProject.name = 'gradle-nultimodule-test'
+rootProject.name = 'reality-quest'
 include 'repository'
 include 'repository:api'
 findProject(':repository:api')?.name = 'api'
