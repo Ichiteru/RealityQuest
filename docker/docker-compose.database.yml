@@ -17,24 +17,7 @@ services:
       - PGDATA=/var/lib/postgresql/data
     volumes:
       - pgdata:/var/lib/postgresql/data
-  app:
-    image: reality-quest.jar
-    depends_on: [database]
-    ports:
-      - 8080:8080
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-realityquest-db:5432/test
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=root
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
-      - KEYCLOAK_HOST=localhost
-      - KEYCLOAK_PORT=8180
-      - KEYCLOAK_CONTEXT_PATH=/auth
-      - KEYCLOAK_REALM=custom-oauth2-server
-      - SPRING_LIQUIBASE_CHANGE_LOG=db/changelog/db.changelog-master.xml
-      - SPRING_SECURITY_FILTER_ORDER=10
 
-      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://localhost:8180/auth/realms/custom-oauth2-server/protocol/openid-connect/certs
 
 
 
