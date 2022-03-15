@@ -1,0 +1,22 @@
+version: '3.9'
+
+networks:
+  auth-network:
+    driver: bridge
+
+services:
+  keycloak:
+    image: jboss/keycloak
+    ports:
+      - "8024:8080"
+    volumes:
+      - ./imports:/tmp/import
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+    command:
+          - "-Dkeycloak.migration.action=import"
+          - "-Dkeycloak.migration.provider=dir"
+          - "-Dkeycloak.migration.dir=/tmp/import"
+    networks:
+      - auth-network

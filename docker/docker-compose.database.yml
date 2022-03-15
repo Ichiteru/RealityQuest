@@ -4,6 +4,7 @@ volumes:
   pgdata:
     driver: local
 
+
 services:
   database:
     container_name: postgres-realityquest-db
@@ -17,12 +18,28 @@ services:
       - PGDATA=/var/lib/postgresql/data
     volumes:
       - pgdata:/var/lib/postgresql/data
+
   app:
     image: reality-quest
     container_name: app
-    depends_on: [database]
+    depends_on: [database, keycloak]
     ports:
-      - "8080:8080"
+      - "8081:8081"
+
+  keycloak:
+    image: jboss/keycloak
+    container_name: local-keycloak
+    ports:
+      - "8024:8080"
+    volumes:
+      - ./imports:/tmp/import
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+    command:
+      - "-Dkeycloak.migration.action=import"
+      - "-Dkeycloak.migration.provider=dir"
+      - "-Dkeycloak.migration.dir=/tmp/import"
 
 
 
