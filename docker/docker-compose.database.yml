@@ -18,6 +18,7 @@ services:
       - PGDATA=/var/lib/postgresql/data
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks: [mynet]
 
   app:
     image: reality-quest
@@ -25,6 +26,7 @@ services:
     depends_on: [database, keycloak]
     ports:
       - "8081:8081"
+    networks: [mynet]
 
   keycloak:
     image: jboss/keycloak
@@ -36,11 +38,16 @@ services:
     environment:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
+#      - KEYCLOAK_FRONTEND_URL=https://auth.test
     command:
       - "-Dkeycloak.migration.action=import"
       - "-Dkeycloak.migration.provider=dir"
       - "-Dkeycloak.migration.dir=/tmp/import"
-
-
+    networks:
+      mynet:
+        aliases:
+            - "keycloak.mydomain.com"
+networks:
+  mynet:
 
 
