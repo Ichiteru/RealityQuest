@@ -1,5 +1,7 @@
 package com.chern.config;
 
+import com.chern.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -27,6 +30,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     private String jwkUri;
+
+    @Autowired
+    private UserService userService;
 
     @Bean
     JwtDecoder jwtDecoder(){
@@ -54,6 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                                 )
                         )
                 );
+                http.addFilterAfter(new UserExistFilter(userService), BearerTokenAuthenticationFilter.class);
     }
 
     private Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter(){

@@ -1,6 +1,8 @@
 package com.chern.exception.handler;
 
 import com.chern.exception.*;
+import liquibase.pro.packaged.E;
+import org.keycloak.common.VerificationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -78,6 +80,15 @@ public class ExceptionHandler extends ResponseEntityExceptionHandler {
                 .withStatus(HttpStatus.BAD_REQUEST.value())
                 .withTimestamp(LocalDateTime.now()).build();
         ResponseEntity<ApiError> responseEntity = new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+        return responseEntity;
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(JwtVerificationException.class)
+    public ResponseEntity<ApiError> handleJwtVerificationException(Exception e){
+        ApiError apiError = ApiErrorBuilder.anApiError().withError(e.getMessage())
+                .withStatus(HttpStatus.UNAUTHORIZED.value())
+                .withTimestamp(LocalDateTime.now()).build();
+        ResponseEntity<ApiError> responseEntity = new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
         return responseEntity;
     }
 }
