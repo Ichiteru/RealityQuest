@@ -1,5 +1,7 @@
 package com.chern.service;
 
+import com.chern.dto.TagDTO;
+import com.chern.dto.converter.Converter;
 import com.chern.model.Tag;
 import com.chern.repo.TagRepository;
 import com.chern.exception.DuplicateFieldException;
@@ -13,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TagService {
@@ -21,6 +24,8 @@ public class TagService {
     private TagRepository tagRepository;
     @Autowired
     private Validator<Tag> tagValidator;
+    @Autowired
+    Converter<TagDTO, Tag> tagConverter;
 
     public TagService(TagRepository tagRepository, Validator<Tag> tagValidator) {
         this.tagRepository = tagRepository;
@@ -35,9 +40,13 @@ public class TagService {
         }
     }
 
-    public List<Tag> getAll() {
+    public List<TagDTO> getAll(int page, int size) {
         try {
-            return tagRepository.getAll();
+            List<Tag> tags = tagRepository.getAll(page, size);
+            List<TagDTO> dtos = tags.stream()
+                    .map(tag -> tagConverter.entityToDtoConverter(tag))
+                    .collect(Collectors.toList());
+            return dtos;
         } catch (EmptyResultDataAccessException exception){
             return new ArrayList<>();
         }

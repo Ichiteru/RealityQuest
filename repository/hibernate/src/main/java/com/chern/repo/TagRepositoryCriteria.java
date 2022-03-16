@@ -38,12 +38,14 @@ public class TagRepositoryCriteria implements TagRepository {
     }
 
     @Override
-    public List<Tag> getAll() {
+    public List<Tag> getAll(int page, int size) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tag> query = criteriaBuilder.createQuery(Tag.class);
         Root<Tag> from = query.from(Tag.class);
         CriteriaQuery<Tag> selectAll = query.select(from);
         TypedQuery<Tag> result = entityManager.createQuery(selectAll);
+        result.setFirstResult(page);
+        result.setMaxResults(size);
         return result.getResultList();
     }
 

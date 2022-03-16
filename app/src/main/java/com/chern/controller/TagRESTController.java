@@ -26,9 +26,9 @@ public class TagRESTController {
 
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_OWNER')")
     @GetMapping(value = "/tags")
-    public ResponseEntity getAll() {
-        List<Tag> tags = tagService.getAll();
-        return ResponseEntity.ok(tags);
+    public ResponseEntity getAll(@RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(tagService.getAll(page, size));
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")

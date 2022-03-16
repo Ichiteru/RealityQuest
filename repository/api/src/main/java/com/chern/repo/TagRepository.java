@@ -13,7 +13,7 @@ public interface TagRepository {
 
     Tag getById(long id);
 
-    List<Tag> getAll();
+    List<Tag> getAll(int page, int size);
 
     boolean existsById(long id);
 
