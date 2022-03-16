@@ -445,7 +445,24 @@
       "oauth2-demo-thymeleaf-client": []
     }
   },
-  "groups": [],
+  "groups": [
+    {
+      "id": "1d22092e-f325-4968-8dac-17a21eacac56",
+      "name": "RQ_GROUP",
+      "path": "/RQ_GROUP",
+      "attributes": {},
+      "realmRoles": [
+        "OWNER",
+        "GUEST",
+        "offline_access",
+        "USER",
+        "uma_authorization",
+        "default-roles-custom-oauth2-server"
+      ],
+      "clientRoles": {},
+      "subGroups": []
+    }
+  ],
   "defaultRole": {
     "id": "bf798589-f41b-48ff-9bfd-b2477cf0935d",
     "name": "default-roles-custom-oauth2-server",
@@ -491,6 +508,47 @@
   "webAuthnPolicyPasswordlessCreateTimeout": 0,
   "webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister": false,
   "webAuthnPolicyPasswordlessAcceptableAaguids": [],
+  "users": [
+    {
+      "id": "d2ffddc0-43a5-4d7b-a6a0-9faaad62be68",
+      "createdTimestamp": 1647417109176,
+      "username": "service-account-oauth2-postman-password-grant-client",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": false,
+      "serviceAccountClientId": "oauth2-postman-password-grant-client",
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-custom-oauth2-server"
+      ],
+      "clientRoles": {
+        "realm-management": [
+          "manage-identity-providers",
+          "manage-events",
+          "manage-users",
+          "manage-authorization",
+          "manage-clients",
+          "manage-realm",
+          "query-realms",
+          "view-authorization",
+          "view-realm",
+          "realm-admin",
+          "query-clients",
+          "query-users",
+          "view-clients",
+          "create-client",
+          "view-events",
+          "view-users",
+          "query-groups",
+          "view-identity-providers",
+          "impersonation"
+        ]
+      },
+      "notBefore": 0,
+      "groups": []
+    }
+  ],
   "scopeMappings": [
     {
       "clientScope": "offline_access",
@@ -824,7 +882,7 @@
       "standardFlowEnabled": false,
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": false,
+      "serviceAccountsEnabled": true,
       "publicClient": false,
       "frontchannelLogout": false,
       "protocol": "openid-connect",
@@ -857,6 +915,50 @@
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": true,
       "nodeReRegistrationTimeout": -1,
+      "protocolMappers": [
+        {
+          "id": "13a7cd22-da53-41f0-b7ef-dbaa1aad03b7",
+          "name": "Client ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientId",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientId",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "af50bf33-010b-4180-b29e-d725710d319e",
+          "name": "Client Host",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientHost",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "id": "f1a28942-b646-49fa-87a2-55a72aba03f0",
+          "name": "Client IP Address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientAddress",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientAddress",
+            "jsonType.label": "String"
+          }
+        }
+      ],
       "defaultClientScopes": [
         "web-origins",
         "profile",
@@ -2334,5 +2436,54 @@
   },
   "clientPolicies": {
     "policies": []
-  }
+  },
+  "users" : [
+    {
+      "username" : "ichiteru",
+      "enabled": true,
+      "email" : "chern200213@gmail.com",
+      "firstName": "Ilya",
+      "lastName": "Charniauski",
+      "credentials" : [
+        { "type" : "password",
+          "value" : "root" }
+      ],
+      "realmRoles": [ "OWNER","USER", "GUEST", "uma_authorization", "offline_access", "default-roles-custom-oauth2-server" ],
+      "clientRoles": {
+        "account": [ "manage-account" ]
+      }
+    },
+    {
+      "username" : "zemnowf",
+      "enabled": true,
+      "email" : "zemnowf@gmail.com",
+      "firstName": "Danila",
+      "lastName": "Zemnow",
+      "credentials" : [
+        { "type" : "password",
+          "value" : "root" }
+      ],
+      "realmRoles": [ "USER","GUEST", "uma_authorization", "offline_access", "default-roles-custom-oauth2-server" ],
+      "clientRoles": {
+        "realm-management": [ "realm-admin" ],
+        "account": [ "manage-account" ]
+      }
+    },
+    {
+      "username" : "kondart",
+      "enabled": true,
+      "email" : "kondart@gmail.com",
+      "firstName": "Artem",
+      "lastName": "Kondratovich",
+      "credentials" : [
+        { "type" : "password",
+          "value" : "root" }
+      ],
+      "realmRoles": [ "GUEST", "uma_authorization", "offline_access", "default-roles-custom-oauth2-server" ],
+      "clientRoles": {
+        "realm-management": [ "realm-admin" ],
+        "account": [ "manage-account" ]
+      }
+    }
+  ]
 }
