@@ -1,6 +1,7 @@
 package com.chern.repo;
 
 import com.chern.model.Quest;
+import com.chern.model.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -8,7 +9,9 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -85,6 +88,20 @@ public class QuestRepositoryCriteria implements QuestRepository {
         Root<Quest> from = criteriaDelete.from(Quest.class);
         criteriaDelete.where(from.get("id").in(ids));
         return entityManager.createQuery(criteriaDelete).executeUpdate();
+    }
+
+    @Override
+    public List<Quest> searchBySeveralTags(List<Long> tagIds) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Quest> query = criteriaBuilder.createQuery(Quest.class);
+        Root<Quest> from = query.from(Quest.class);
+//        Join<Quest, Tag> tags = from.join("tags");
+        Optional<Predicate> predicate = tagIds.stream()
+                .map(id -> criteriaBuilder.isMember(id, from.get("tags")))
+                .reduce(criteriaBuilder::and);
+        CriteriaQuery<Quest> result = query.select(from).where(predicate.get());
+        List<Quest> resultList = entityManager.createQuery(result).getResultList();
+        return resultList;
     }
 
 //    @Override

@@ -2,6 +2,7 @@ package com.chern.service;
 
 import com.chern.dto.FullInfoQuestDTO;
 import com.chern.dto.TabularQuestDTO;
+import com.chern.dto.TagDTO;
 import com.chern.dto.converter.Converter;
 import com.chern.dto.converter.TabularQuestConverter;
 import com.chern.exception.NoSuchDataException;
@@ -36,6 +37,8 @@ public class QuestService {
     private Converter<TabularQuestDTO, Quest> tabularQuestConverter;
     @Autowired
     private Converter<FullInfoQuestDTO, Quest> infoQuestConverter;
+    @Autowired
+    private Converter<TagDTO, Tag> tagConverter;
 
     public FullInfoQuestDTO getById(long id) {
         try {
@@ -104,6 +107,14 @@ public class QuestService {
             return 0;
         }
         return questRepository.delete(ids);
+    }
+
+    public List<TabularQuestDTO> searchBySeveralTags(List<Long> tagIds) {
+        List<Quest> quests = questRepository.searchBySeveralTags(tagIds);
+        List<TabularQuestDTO> dtos = quests.stream()
+                .map(q -> tabularQuestConverter.entityToDtoConverter(q))
+                .collect(Collectors.toList());
+        return dtos;
     }
 
 //    public List<Quest> searchBy(String tagName, String namePart,

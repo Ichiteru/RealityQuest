@@ -2,6 +2,7 @@ package com.chern.controller;
 
 import com.chern.dto.NewQuestDTO;
 import com.chern.dto.TabularQuestDTO;
+import com.chern.dto.TagDTO;
 import com.chern.dto.converter.Converter;
 import com.chern.model.Quest;
 import com.chern.service.QuestService;
@@ -73,6 +74,12 @@ public class QuestRESTController {
         return ResponseEntity.noContent().build();
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_OWNER')")
+    @GetMapping(value = "/quests/search/by/several-tags")
+    public ResponseEntity search(@RequestParam List<Long> tagIds) {
+        List<TabularQuestDTO> quests = questService.searchBySeveralTags(tagIds);
+        return ResponseEntity.ok(quests);
+    }
 
 //    @PreAuthorize("hasAnyAuthority('ROLE_GUEST', 'ROLE_USER', 'ROLE_OWNER')")
 //    @GetMapping(value = "/quests/search")
