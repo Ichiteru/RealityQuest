@@ -28,4 +28,7 @@ public class Tag {
     @JsonIgnoreProperties("tags")
     private List<Quest> quests;
 
+    public Tag(String name) {
+        this.name = name;
+    }
 }

@@ -1,5 +1,6 @@
 package com.chern.repo;
 
+import com.chern.filter.QuestFilter;
 import com.chern.model.Quest;
 import com.chern.model.Tag;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Repository
 @RequiredArgsConstructor
@@ -102,6 +104,40 @@ public class QuestRepositoryCriteria implements QuestRepository {
         CriteriaQuery<Quest> result = query.select(from).where(predicate.get());
         List<Quest> resultList = entityManager.createQuery(result).getResultList();
         return resultList;
+    }
+
+    @Override
+    public List<Quest> findByFilter(QuestFilter filter, int page, int size) {
+            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Quest> filterQuery = builder.createQuery(Quest.class);
+            Root<Quest> root = filterQuery.from(Quest.class);
+
+            Optional<Predicate> predicate = buildOptionsPredicate(builder, root, filter);
+            predicate.ifPresent(filterQuery::where);
+
+            TypedQuery<Quest> query = entityManager.createQuery(filterQuery);
+            query.setFirstResult(page);
+            query.setMaxResults(size);
+            return query.getResultList();
+    }
+
+    private Optional<Predicate> buildOptionsPredicate(CriteriaBuilder builder,
+                                                      Root<Quest> root,
+                                                      QuestFilter filter
+    ) {
+        Optional<Predicate> tagsPredicate = filter.getTags().stream()
+                .map(tag -> builder.isMember(tag.getName(), root.get("tags")))
+                .reduce(builder::and);
+        Optional<Predicate> namesPredicate = filter.getNames().stream()
+                .map(name -> builder.like(root.get("name"), "%" + name + "%"))
+                .reduce(builder::and);
+        Optional<Predicate> descriptionsPredicate = filter.getDescriptions().stream()
+                .map(description -> builder.like(root.get("description"), "%" + description + "%"))
+                .reduce(builder::and);
+        return Stream.of(tagsPredicate, namesPredicate, descriptionsPredicate)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .reduce(builder::and);
     }
 
 //    @Override

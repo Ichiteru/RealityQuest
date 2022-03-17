@@ -1,11 +1,13 @@
 package com.chern.service;
 
 import com.chern.dto.FullInfoQuestDTO;
+import com.chern.dto.QuestFilterDto;
 import com.chern.dto.TabularQuestDTO;
 import com.chern.dto.TagDTO;
 import com.chern.dto.converter.Converter;
 import com.chern.dto.converter.TabularQuestConverter;
 import com.chern.exception.NoSuchDataException;
+import com.chern.filter.QuestFilter;
 import com.chern.model.Quest;
 import com.chern.model.Tag;
 import com.chern.repo.QuestRepository;
@@ -38,7 +40,7 @@ public class QuestService {
     @Autowired
     private Converter<FullInfoQuestDTO, Quest> infoQuestConverter;
     @Autowired
-    private Converter<TagDTO, Tag> tagConverter;
+    private Converter<QuestFilterDto, QuestFilter> filterConverter;
 
     public FullInfoQuestDTO getById(long id) {
         try {
@@ -115,6 +117,13 @@ public class QuestService {
                 .map(q -> tabularQuestConverter.entityToDtoConverter(q))
                 .collect(Collectors.toList());
         return dtos;
+    }
+
+    public List<TabularQuestDTO> searchBy(QuestFilterDto questFilterDto, int page, int size) {
+        List<Quest> quests = questRepository
+                .findByFilter(filterConverter.dtoToEntityConverter(questFilterDto), page, size);
+        return quests.stream().map(q -> tabularQuestConverter.entityToDtoConverter(q))
+                .collect(Collectors.toList());
     }
 
 //    public List<Quest> searchBy(String tagName, String namePart,

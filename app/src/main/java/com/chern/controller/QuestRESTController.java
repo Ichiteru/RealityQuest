@@ -1,8 +1,8 @@
 package com.chern.controller;
 
 import com.chern.dto.NewQuestDTO;
+import com.chern.dto.QuestFilterDto;
 import com.chern.dto.TabularQuestDTO;
-import com.chern.dto.TagDTO;
 import com.chern.dto.converter.Converter;
 import com.chern.model.Quest;
 import com.chern.service.QuestService;
@@ -11,12 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -81,14 +75,12 @@ public class QuestRESTController {
         return ResponseEntity.ok(quests);
     }
 
-//    @PreAuthorize("hasAnyAuthority('ROLE_GUEST', 'ROLE_USER', 'ROLE_OWNER')")
-//    @GetMapping(value = "/quests/search")
-//    public ResponseEntity search(@RequestParam(required = false, defaultValue = "") String tagName
-//            , @RequestParam(required = false, defaultValue = "") String namePart
-//            , @RequestParam(required = false, defaultValue = "") String descriptionPart
-//            , @RequestParam(required = false, defaultValue = "") String sortBy
-//            , @RequestParam(required = false, defaultValue = "DESC") String sortType) {
-//        List<Quest> quests = questService.searchBy(tagName, namePart, descriptionPart, sortBy, sortType);
-//        return ResponseEntity.ok(quests);
-//    }
+    @PreAuthorize("hasAnyAuthority('ROLE_GUEST', 'ROLE_USER', 'ROLE_OWNER')")
+    @GetMapping(value = "/quests/search")
+    public ResponseEntity search(QuestFilterDto questFilterDto,
+                                 @RequestParam(defaultValue = "0", required = false) int page,
+                                 @RequestParam(defaultValue = "10", required = false) int size) {
+        List<TabularQuestDTO> quests = questService.searchBy(questFilterDto, page, size);
+        return ResponseEntity.ok(quests);
+    }
 }

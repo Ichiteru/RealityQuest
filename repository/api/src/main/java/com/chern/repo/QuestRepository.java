@@ -1,5 +1,6 @@
 package com.chern.repo;
 
+import com.chern.filter.QuestFilter;
 import com.chern.model.Quest;
 import com.chern.model.Tag;
 
@@ -17,5 +18,7 @@ public interface QuestRepository {
     int delete(List<Long> ids);
 
     List<Quest> searchBySeveralTags(List<Long> tagIds);
+
+    List<Quest> findByFilter(QuestFilter filter, int page, int size);
 //    List<Quest> searchByParams(String query);
 }
