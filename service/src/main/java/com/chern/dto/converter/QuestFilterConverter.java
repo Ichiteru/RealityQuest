@@ -20,9 +20,6 @@ public class QuestFilterConverter implements Converter<QuestFilterDto, QuestFilt
     public QuestFilter dtoToEntityConverter(QuestFilterDto entity) {
         QuestFilter questFilter = new QuestFilter();
         BeanUtils.copyProperties(entity,questFilter);
-        questFilter.setTags(entity.getTags().stream()
-                .map(name -> new Tag((name)))
-                .collect(Collectors.toList()));
         return questFilter;
     }
 }

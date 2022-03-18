@@ -22,4 +22,6 @@ public interface TagRepository {
     int delete(List<Long> ids);
 
     Tag findMostUsedOfTopUser();
+
+    List<Tag> getByNames(List<String> tags);
 }

@@ -122,4 +122,13 @@ public class TagRepositoryCriteria implements TagRepository {
                 .orElse(null);
 
     }
+
+    @Override
+    public List<Tag> getByNames(List<String> names) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tag> query = criteriaBuilder.createQuery(Tag.class);
+        Root<Tag> from = query.from(Tag.class);
+        CriteriaQuery<Tag> result = query.select(from).where(from.get("name").in(names));
+        return entityManager.createQuery(query).getResultList();
+    }
 }

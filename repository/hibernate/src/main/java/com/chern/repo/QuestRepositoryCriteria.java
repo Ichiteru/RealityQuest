@@ -2,7 +2,6 @@ package com.chern.repo;
 
 import com.chern.filter.QuestFilter;
 import com.chern.model.Quest;
-import com.chern.model.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -97,7 +95,6 @@ public class QuestRepositoryCriteria implements QuestRepository {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Quest> query = criteriaBuilder.createQuery(Quest.class);
         Root<Quest> from = query.from(Quest.class);
-//        Join<Quest, Tag> tags = from.join("tags");
         Optional<Predicate> predicate = tagIds.stream()
                 .map(id -> criteriaBuilder.isMember(id, from.get("tags")))
                 .reduce(criteriaBuilder::and);
@@ -121,12 +118,9 @@ public class QuestRepositoryCriteria implements QuestRepository {
             return query.getResultList();
     }
 
-    private Optional<Predicate> buildOptionsPredicate(CriteriaBuilder builder,
-                                                      Root<Quest> root,
-                                                      QuestFilter filter
-    ) {
+    private Optional<Predicate> buildOptionsPredicate(CriteriaBuilder builder, Root<Quest> root, QuestFilter filter) {
         Optional<Predicate> tagsPredicate = filter.getTags().stream()
-                .map(tag -> builder.isMember(tag.getName(), root.get("tags")))
+                .map(tag -> builder.isMember(tag, root.get("tags")))
                 .reduce(builder::and);
         Optional<Predicate> namesPredicate = filter.getNames().stream()
                 .map(name -> builder.like(root.get("name"), "%" + name + "%"))
@@ -140,25 +134,4 @@ public class QuestRepositoryCriteria implements QuestRepository {
                 .reduce(builder::and);
     }
 
-//    @Override
-//    public List<Quest> searchByParams(String query){
-//        List<Quest> quests = jdbcTemplate.queryForObject(query, new RowMapper<List<Quest>>() {
-//            @Override
-//            public List<Quest> mapRow(ResultSet rs, int rowNum) throws SQLException {
-//                List<Quest> quests = new ArrayList<>();
-//                do {
-//                    quests.add(
-//                            QuestBuilder.aQuest()
-//                                    .withId(rs.getLong("id"))
-//                                    .withName(rs.getString("name"))
-//                                    .withGenre(rs.getString("genre"))
-//                                    .withPrice(rs.getDouble("price"))
-//                                    .withDuration(rs.getTime("duration").toLocalTime())
-//                                    .withMaxPeople(rs.getInt("max_people")).build());
-//                } while (rs.next());
-//                return quests;
-//            }
-//        });
-//        return quests;
-//    }
 }

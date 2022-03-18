@@ -120,15 +120,13 @@ public class QuestService {
     }
 
     public List<TabularQuestDTO> searchBy(QuestFilterDto questFilterDto, int page, int size) {
+        QuestFilter questFilter = filterConverter.dtoToEntityConverter(questFilterDto);
+        List<Tag> tags = tagRepository.getByNames(questFilterDto.getTags());
+        questFilter.setTags(tags);
         List<Quest> quests = questRepository
-                .findByFilter(filterConverter.dtoToEntityConverter(questFilterDto), page, size);
+                .findByFilter(questFilter, page, size);
         return quests.stream().map(q -> tabularQuestConverter.entityToDtoConverter(q))
                 .collect(Collectors.toList());
     }
 
-//    public List<Quest> searchBy(String tagName, String namePart,
-//                                String descriptionPart, String sortBy, String sortType) {
-//        String query = SearchQueryBuilder.buildSearchQuery(tagName, namePart, descriptionPart, sortBy, sortType);
-//        return questRepository.searchByParams(query);
-//    }
 }
