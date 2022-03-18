@@ -1,7 +1,6 @@
 package com.chern.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,7 +24,6 @@ public class Tag {
             joinColumns = @JoinColumn(name = "tag_id"),
             inverseJoinColumns = @JoinColumn(name = "quest_id")
     )
-    @JsonIgnoreProperties("tags")
     private List<Quest> quests;
 
     public Tag(String name) {

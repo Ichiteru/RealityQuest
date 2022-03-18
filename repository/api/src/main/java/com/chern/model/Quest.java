@@ -1,6 +1,5 @@
 package com.chern.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -39,7 +38,6 @@ public class Quest {
            inverseJoinColumns = @JoinColumn(name = "tag_id")
    )
    @ToString.Exclude
-   @JsonIgnoreProperties("quests")
    private List<Tag> tags;
    @ToString.Exclude
    @OneToMany(mappedBy = "quest")

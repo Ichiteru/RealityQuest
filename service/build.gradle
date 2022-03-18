@@ -11,8 +11,8 @@ repositories {
 
 dependencies {
     api project(':repository:hibernate')
-    implementation 'org.springframework:spring-context:5.3.16'
-    implementation 'org.springframework:spring-tx:5.3.16'
+    api 'org.springframework:spring-context:5.3.16'
+    api 'org.springframework:spring-tx:5.3.16'
     compileOnly 'org.projectlombok:lombok:1.18.22'
     annotationProcessor 'org.projectlombok:lombok:1.18.22'
 }

@@ -1,6 +1,5 @@
 package com.chern.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,13 +22,10 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
-
-    @JsonIgnoreProperties("orders")
     private User user;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "quest_id")
-    @JsonIgnoreProperties("orders")
     private Quest quest;
 
     @Column(name = "order_cost")
