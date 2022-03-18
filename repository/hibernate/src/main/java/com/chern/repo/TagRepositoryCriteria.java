@@ -4,6 +4,7 @@ package com.chern.repo;
 import com.chern.model.Order;
 import com.chern.model.Tag;
 import com.chern.model.User;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Repository;
@@ -21,9 +22,13 @@ public class TagRepositoryCriteria implements TagRepository {
     private EntityManager entityManager;
 
     @Override
-    public List<Tag> save(List<Tag> tags) throws DuplicateKeyException {
+    public List<Tag> save(List<Tag> tags) throws DuplicateKeyException{
+        try {
         tags.forEach(tag -> entityManager.persist(tag));
         return tags;
+        } catch (ConstraintViolationException exception){
+            throw new DuplicateKeyException("Tag with this name already exists");
+        }
     }
 
     @Override

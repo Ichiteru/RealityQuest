@@ -3,6 +3,7 @@ package com.chern.service;
 import com.chern.dto.*;
 import com.chern.dto.converter.Converter;
 import com.chern.dto.converter.TabularQuestConverter;
+import com.chern.exception.DuplicateFieldException;
 import com.chern.exception.NoSuchDataException;
 import com.chern.filter.QuestFilter;
 import com.chern.model.Quest;
@@ -65,7 +66,7 @@ public class QuestService {
     }
 
     @Transactional
-    public Quest save(Quest quest) {
+    public Quest save(Quest quest)  throws DuplicateFieldException{
         questValidator.validate(quest);
         quest.setCreationDate(LocalDate.now());
         quest.setModificationDate(LocalDate.now());
@@ -75,6 +76,9 @@ public class QuestService {
                     .collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
             List<Tag> newTags = derivedTags.get(true);
             newTags.forEach(tag -> tagValidator.validate(tag));
+            if (!tagRepository.getByNames(newTags.stream().map(Tag::getName).collect(Collectors.toList())).isEmpty()){
+                throw new DuplicateFieldException("Tag with some of this names already exists");
+            }
             tagRepository.save(newTags);
         }
         quest = questRepository.save(quest);
@@ -82,7 +86,7 @@ public class QuestService {
     }
 
     @Transactional
-    public Quest update(UpdateQuestDto questDto) {
+    public Quest update(UpdateQuestDto questDto) throws DuplicateFieldException{
         if (!questRepository.existsById(questDto.getId())) {
             throw new NoSuchDataException("There is no quest with this id(" + questDto.getId() + ")");
         }
@@ -93,6 +97,9 @@ public class QuestService {
                 .collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
         List<Tag> newTags = derivedTags.get(true);
         newTags.forEach(tag -> tagValidator.validate(tag));
+        if (!tagRepository.getByNames(newTags.stream().map(Tag::getName).collect(Collectors.toList())).isEmpty()){
+            throw new DuplicateFieldException("Tag with some of this names already exists");
+        }
         tagRepository.save(newTags);
         quest.setTags(tags);
         questRepository.update(quest);

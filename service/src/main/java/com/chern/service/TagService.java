@@ -8,11 +8,13 @@ import com.chern.exception.DuplicateFieldException;
 import com.chern.exception.NoSuchDataException;
 import com.chern.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,13 +55,12 @@ public class TagService {
     }
 
     @Transactional
-    public List<Tag> save(List<Tag> tags) {
+    public List<Tag> save(List<Tag> tags) throws DuplicateFieldException {
         tags.forEach(tag -> tagValidator.validate(tag));
-        try {
-            return tagRepository.save(tags);
-        } catch (DuplicateKeyException ex){
+        if (!tagRepository.getByNames(tags.stream().map(Tag::getName).collect(Collectors.toList())).isEmpty()){
             throw new DuplicateFieldException("Tag with some of this names already exists");
         }
+        return tagRepository.save(tags);
     }
 
     public long deleteById(long id){
