@@ -1,9 +1,6 @@
 package com.chern.service;
 
-import com.chern.dto.FullInfoQuestDTO;
-import com.chern.dto.QuestFilterDto;
-import com.chern.dto.TabularQuestDTO;
-import com.chern.dto.TagDTO;
+import com.chern.dto.*;
 import com.chern.dto.converter.Converter;
 import com.chern.dto.converter.TabularQuestConverter;
 import com.chern.exception.NoSuchDataException;
@@ -41,6 +38,8 @@ public class QuestService {
     private Converter<FullInfoQuestDTO, Quest> infoQuestConverter;
     @Autowired
     private Converter<QuestFilterDto, QuestFilter> filterConverter;
+    @Autowired
+    private Converter<UpdateQuestDto, Quest> updateQuestConverter;
 
     public FullInfoQuestDTO getById(long id) {
         try {
@@ -83,15 +82,20 @@ public class QuestService {
     }
 
     @Transactional
-    public Quest update(Quest quest) {
-        if (!questRepository.existsById(quest.getId())) {
-            throw new NoSuchDataException("There is no quest with this id(" + quest.getId() + ")");
+    public Quest update(UpdateQuestDto questDto) {
+        if (!questRepository.existsById(questDto.getId())) {
+            throw new NoSuchDataException("There is no quest with this id(" + questDto.getId() + ")");
         }
+        Quest quest = updateQuestConverter.dtoToEntityConverter(questDto);
         questValidator.validate(quest);
-        quest.setModificationDate(LocalDate.now());
         List<Tag> tags = quest.getTags();
+        Map<Boolean, List<Tag>> derivedTags = tags.stream()
+                .collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
+        List<Tag> newTags = derivedTags.get(true);
+        newTags.forEach(tag -> tagValidator.validate(tag));
+        tagRepository.save(newTags);
+        quest.setTags(tags);
         questRepository.update(quest);
-        tags.forEach(tag -> tagValidator.validate(tag));
         return quest;
     }
 

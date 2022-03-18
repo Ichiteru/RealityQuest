@@ -26,7 +26,7 @@ public class Quest {
    private String genre;
    private double price;
    private LocalTime duration;
-   @Column(name = "creation_date")
+   @Column(name = "creation_date", updatable = false)
    private LocalDate creationDate;
    @Column(name = "modification_date")
    private LocalDate modificationDate;

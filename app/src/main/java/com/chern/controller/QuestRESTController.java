@@ -3,6 +3,7 @@ package com.chern.controller;
 import com.chern.dto.NewQuestDTO;
 import com.chern.dto.QuestFilterDto;
 import com.chern.dto.TabularQuestDTO;
+import com.chern.dto.UpdateQuestDto;
 import com.chern.dto.converter.Converter;
 import com.chern.model.Quest;
 import com.chern.service.QuestService;
@@ -47,9 +48,8 @@ public class QuestRESTController {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
-    @PutMapping(path = "/quests", consumes = MediaType.APPLICATION_JSON_VALUE
-            , produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity update(@RequestBody Quest quest) {
+    @PutMapping(path = "/quests")
+    public ResponseEntity update(@RequestBody UpdateQuestDto quest) {
         Quest updatedQuest = questService.update(quest);
         return ResponseEntity.ok(updatedQuest);
     }
