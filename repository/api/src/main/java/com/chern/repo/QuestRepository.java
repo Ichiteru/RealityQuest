@@ -14,6 +14,9 @@ public interface QuestRepository {
 
     Quest update(Quest quest);
     Boolean existsById(long id);
+
+    Boolean existsByName(String name);
+
     long deleteById(long id);
     int delete(List<Long> ids);
 

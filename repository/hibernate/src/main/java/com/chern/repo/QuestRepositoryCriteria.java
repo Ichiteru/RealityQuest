@@ -72,6 +72,18 @@ public class QuestRepositoryCriteria implements QuestRepository {
     }
 
     @Override
+    public Boolean existsByName(String name){
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+        Root<Quest> from = query.from(Quest.class);
+        CriteriaQuery<Long> existsQuery = query
+                .select(criteriaBuilder.count(from))
+                .where(criteriaBuilder.equal(from.get("name"), name));
+        entityManager.createQuery(existsQuery).getSingleResult();
+        return entityManager.createQuery(existsQuery).getSingleResult() == 0 ? false : true;
+    }
+
+    @Override
     public long deleteById(long id){
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaDelete<Quest> criteriaDelete = criteriaBuilder.createCriteriaDelete(Quest.class);

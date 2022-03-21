@@ -68,18 +68,14 @@ public class QuestService {
     @Transactional
     public Quest save(Quest quest)  throws DuplicateFieldException{
         questValidator.validate(quest);
+        if(questRepository.existsByName(quest.getName())){
+            throw new DuplicateFieldException("Quest with name '" + quest.getName() + "' already exists");
+        }
         quest.setCreationDate(LocalDate.now());
         quest.setModificationDate(LocalDate.now());
         List<Tag> tags = quest.getTags();
         if (tags != null) {
-            Map<Boolean, List<Tag>> derivedTags = tags.stream()
-                    .collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
-            List<Tag> newTags = derivedTags.get(true);
-            newTags.forEach(tag -> tagValidator.validate(tag));
-            if (!tagRepository.getByNames(newTags.stream().map(Tag::getName).collect(Collectors.toList())).isEmpty()){
-                throw new DuplicateFieldException("Tag with some of this names already exists");
-            }
-            tagRepository.save(newTags);
+            quest.setTags(saveNewTags(tags));
         }
         quest = questRepository.save(quest);
         return quest;
@@ -92,7 +88,16 @@ public class QuestService {
         }
         Quest quest = updateQuestConverter.dtoToEntityConverter(questDto);
         questValidator.validate(quest);
+        if(questRepository.existsByName(quest.getName())){
+            throw new DuplicateFieldException("Quest with name '" + quest.getName() + "' already exists");
+        }
         List<Tag> tags = quest.getTags();
+        quest.setTags(saveNewTags(tags));
+        questRepository.update(quest);
+        return quest;
+    }
+
+    private List<Tag> saveNewTags(List<Tag> tags) {
         Map<Boolean, List<Tag>> derivedTags = tags.stream()
                 .collect(Collectors.partitioningBy(tag -> tag.getId() == 0));
         List<Tag> newTags = derivedTags.get(true);
@@ -101,9 +106,7 @@ public class QuestService {
             throw new DuplicateFieldException("Tag with some of this names already exists");
         }
         tagRepository.save(newTags);
-        quest.setTags(tags);
-        questRepository.update(quest);
-        return quest;
+        return tags;
     }
 
     @Transactional
