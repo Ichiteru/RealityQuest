@@ -10,6 +10,7 @@ import com.chern.model.User;
 import com.chern.repo.OrderRepository;
 import com.chern.repo.QuestRepository;
 import com.chern.repo.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -21,16 +22,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private QuestRepository questRepository;
-    @Autowired
-    private Converter<TabularOrderDTO, Order> tabularOrderConverter;
+    private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
+    private final QuestRepository questRepository;
+    private final Converter<TabularOrderDTO, Order> tabularOrderConverter;
 
     @Transactional
     public TabularOrderDTO save(String username, long questId, LocalDateTime reservationTime) {

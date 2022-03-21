@@ -11,6 +11,7 @@ import com.chern.model.Tag;
 import com.chern.repo.QuestRepository;
 import com.chern.repo.TagRepository;
 import com.chern.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,24 +24,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class QuestService {
 
-    @Autowired
-    private QuestRepository questRepository;
-    @Autowired
-    private TagRepository tagRepository;
-    @Autowired
-    private Validator<Quest> questValidator;
-    @Autowired
-    private Validator<Tag> tagValidator;
-    @Autowired
-    private Converter<TabularQuestDTO, Quest> tabularQuestConverter;
-    @Autowired
-    private Converter<FullInfoQuestDTO, Quest> infoQuestConverter;
-    @Autowired
-    private Converter<QuestFilterDto, QuestFilter> filterConverter;
-    @Autowired
-    private Converter<UpdateQuestDto, Quest> updateQuestConverter;
+    private final QuestRepository questRepository;
+    private final TagRepository tagRepository;
+    private final Validator<Quest> questValidator;
+    private final Validator<Tag> tagValidator;
+    private final Converter<TabularQuestDTO, Quest> tabularQuestConverter;
+    private final Converter<FullInfoQuestDTO, Quest> infoQuestConverter;
+    private final Converter<QuestFilterDto, QuestFilter> filterConverter;
+    private final Converter<UpdateQuestDto, Quest> updateQuestConverter;
 
     public FullInfoQuestDTO getById(long id) {
         try {

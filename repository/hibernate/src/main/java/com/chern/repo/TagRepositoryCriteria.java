@@ -4,6 +4,7 @@ package com.chern.repo;
 import com.chern.model.Order;
 import com.chern.model.Tag;
 import com.chern.model.User;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -16,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class TagRepositoryCriteria implements TagRepository {
 
     @Autowired

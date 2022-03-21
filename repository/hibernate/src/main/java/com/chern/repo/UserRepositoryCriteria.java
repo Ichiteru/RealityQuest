@@ -1,6 +1,7 @@
 package com.chern.repo;
 
 import com.chern.model.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +11,7 @@ import javax.persistence.criteria.*;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class UserRepositoryCriteria implements UserRepository{
 
     @Autowired

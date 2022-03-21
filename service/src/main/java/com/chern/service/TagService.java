@@ -7,6 +7,7 @@ import com.chern.repo.TagRepository;
 import com.chern.exception.DuplicateFieldException;
 import com.chern.exception.NoSuchDataException;
 import com.chern.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
@@ -20,19 +21,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class TagService {
 
-    @Autowired
-    private TagRepository tagRepository;
-    @Autowired
-    private Validator<Tag> tagValidator;
-    @Autowired
-    Converter<TagDTO, Tag> tagConverter;
-
-    public TagService(TagRepository tagRepository, Validator<Tag> tagValidator) {
-        this.tagRepository = tagRepository;
-        this.tagValidator = tagValidator;
-    }
+    private final TagRepository tagRepository;
+    private final Validator<Tag> tagValidator;
+    private final Converter<TagDTO, Tag> tagConverter;
 
     public TagDTO getById(long id) {
         try {

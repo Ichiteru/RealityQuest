@@ -24,8 +24,6 @@ public class OrderRESTController {
 
     @Autowired
     private OrderService orderService;
-    @Autowired
-    private Converter<TabularOrderDTO, Order> orderConverter;
 
     @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'ROLE_USER')")
     @PostMapping("/orders")

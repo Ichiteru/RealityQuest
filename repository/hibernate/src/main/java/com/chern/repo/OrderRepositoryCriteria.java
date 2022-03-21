@@ -1,6 +1,7 @@
 package com.chern.repo;
 
 import com.chern.model.Order;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class OrderRepositoryCriteria implements OrderRepository {
 
     @Autowired
