@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -28,8 +29,8 @@ public class OrderRESTController {
 
     @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'ROLE_USER')")
     @PostMapping("/orders")
-    public ResponseEntity save(@RequestBody NewOrderDTO info){
-        Jwt token = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public ResponseEntity save(@RequestBody NewOrderDTO info,
+                               @AuthenticationPrincipal Jwt token){
         String username = token.getClaim("preferred_username");
         TabularOrderDTO order = orderService.save(username, info.getQuestId(),info.getReservationTime());
         return ResponseEntity.created(null).body(order);
