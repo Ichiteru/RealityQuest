@@ -43,7 +43,7 @@ public class OrderRepositoryCriteria implements OrderRepository {
         Predicate idPredicate = criteriaBuilder.equal(order.get("id"), id);
         query.where(idPredicate);
         TypedQuery<Order> orderById = entityManager.createQuery(query);
-        return Optional.of(orderById.getSingleResult());
+        return orderById.getResultList().stream().findFirst();
     }
 
     @Override

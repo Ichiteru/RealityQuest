@@ -33,7 +33,7 @@ public class OrderService {
     private Converter<TabularOrderDTO, Order> tabularOrderConverter;
 
     @Transactional
-    public Order save(String username, long questId, LocalDateTime reservationTime) {
+    public TabularOrderDTO save(String username, long questId, LocalDateTime reservationTime) {
         Optional<User> userByUsername = userRepository.findUserByUsername(username);
         if (userByUsername.isEmpty()){
             throw new NoSuchDataException("User with this username not found");
@@ -55,11 +55,8 @@ public class OrderService {
                 .cost(quest.getPrice())
                 .reserveTime(reservationTime)
                 .endTime(endTime).build();
-
         Order save = orderRepository.save(order);
-
-        System.out.println(save);
-        return order;
+        return tabularOrderConverter.entityToDtoConverter(save);
     }
 
     public List<TabularOrderDTO> getAll(int page, int size) {
@@ -74,8 +71,14 @@ public class OrderService {
         }
     }
 
-    public Optional<Order> getById(long id) {
-        Optional<Order> order = orderRepository.getById(id);
-        return order;
+    public TabularOrderDTO getById(long id) {
+        Optional<Order> orderOptional = orderRepository.getById(id);
+        if (orderOptional.isPresent()){
+            TabularOrderDTO tabularOrderDTO = tabularOrderConverter.entityToDtoConverter(orderOptional.get());
+            return tabularOrderDTO;
+        } else{
+            throw new NoSuchDataException("There is no order with id = " + id);
+        }
+
     }
 }

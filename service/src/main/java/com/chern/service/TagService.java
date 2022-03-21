@@ -34,9 +34,10 @@ public class TagService {
         this.tagValidator = tagValidator;
     }
 
-    public Tag getById(long id) {
+    public TagDTO getById(long id) {
         try {
-            return tagRepository.getById(id);
+            Tag byId = tagRepository.getById(id);
+            return tagConverter.entityToDtoConverter(byId);
         } catch (EmptyResultDataAccessException exception){
             throw new NoSuchDataException("There is no tag with such id(" + id + ")");
         }
@@ -55,12 +56,15 @@ public class TagService {
     }
 
     @Transactional
-    public List<Tag> save(List<Tag> tags) throws DuplicateFieldException {
+    public List<TagDTO> save(List<Tag> tags) throws DuplicateFieldException {
         tags.forEach(tag -> tagValidator.validate(tag));
         if (!tagRepository.getByNames(tags.stream().map(Tag::getName).collect(Collectors.toList())).isEmpty()){
             throw new DuplicateFieldException("Tag with some of this names already exists");
         }
-        return tagRepository.save(tags);
+        List<Tag> save = tagRepository.save(tags);
+        return  save.stream()
+                .map(t -> tagConverter.entityToDtoConverter(t))
+                .collect(Collectors.toList());
     }
 
     public long deleteById(long id){
@@ -77,7 +81,7 @@ public class TagService {
         return tagRepository.delete(ids);
     }
 
-    public Tag getMostUsedTag(){
-        return tagRepository.findMostUsedOfTopUser();
+    public TagDTO getMostUsedTag(){
+        return tagConverter.entityToDtoConverter(tagRepository.findMostUsedOfTopUser());
     }
 }

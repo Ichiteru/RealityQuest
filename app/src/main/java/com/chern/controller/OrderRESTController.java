@@ -2,6 +2,7 @@ package com.chern.controller;
 
 import com.chern.dto.NewOrderDTO;
 import com.chern.dto.TabularOrderDTO;
+import com.chern.dto.converter.Converter;
 import com.chern.model.Order;
 import com.chern.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,13 +23,15 @@ public class OrderRESTController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private Converter<TabularOrderDTO, Order> orderConverter;
 
     @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'ROLE_USER')")
     @PostMapping("/orders")
     public ResponseEntity save(@RequestBody NewOrderDTO info){
         Jwt token = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = token.getClaim("preferred_username");
-        Order order = orderService.save(username, info.getQuestId(),info.getReservationTime());
+        TabularOrderDTO order = orderService.save(username, info.getQuestId(),info.getReservationTime());
         return ResponseEntity.created(null).body(order);
     }
 
@@ -43,7 +46,6 @@ public class OrderRESTController {
     @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'ROLE_USER')")
     @GetMapping("/orders/{id}")
     public ResponseEntity getById(@PathVariable long id){
-        Optional<Order> order = orderService.getById(id);
-        return ResponseEntity.ok(order);
+        return ResponseEntity.ok(orderService.getById(id));
     }
 }
