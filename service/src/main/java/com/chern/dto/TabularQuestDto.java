@@ -6,7 +6,7 @@ import java.time.LocalTime;
 
 @Data
 @Builder
-public class TabularQuestDTO {
+public class TabularQuestDto {
 
     private long id;
     private String name;

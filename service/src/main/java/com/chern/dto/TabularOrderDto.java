@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @Builder
-public class TabularOrderDTO {
+public class TabularOrderDto {
 
     private long id;
     private String customer;

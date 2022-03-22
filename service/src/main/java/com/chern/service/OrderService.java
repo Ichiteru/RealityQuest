@@ -1,7 +1,7 @@
 package com.chern.service;
 
-import com.chern.dto.TabularOrderDTO;
-import com.chern.dto.converter.Converter;
+import com.chern.dto.TabularOrderDto;
+import com.chern.dto.converter.Mapper;
 import com.chern.exception.NoSuchDataException;
 import com.chern.exception.QuestReservationException;
 import com.chern.model.Order;
@@ -11,7 +11,6 @@ import com.chern.repo.OrderRepository;
 import com.chern.repo.QuestRepository;
 import com.chern.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,10 +27,10 @@ public class OrderService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
     private final QuestRepository questRepository;
-    private final Converter<TabularOrderDTO, Order> tabularOrderConverter;
+    private final Mapper<TabularOrderDto, Order> tabularOrderMapper;
 
     @Transactional
-    public TabularOrderDTO save(String username, long questId, LocalDateTime reservationTime) {
+    public TabularOrderDto save(String username, long questId, LocalDateTime reservationTime) {
         Optional<User> userByUsername = userRepository.findUserByUsername(username);
         if (userByUsername.isEmpty()){
             throw new NoSuchDataException("User with this username not found");
@@ -54,14 +53,14 @@ public class OrderService {
                 .reserveTime(reservationTime)
                 .endTime(endTime).build();
         Order save = orderRepository.save(order);
-        return tabularOrderConverter.entityToDtoConverter(save);
+        return tabularOrderMapper.entityToDto(save);
     }
 
-    public List<TabularOrderDTO> getAll(int page, int size) {
+    public List<TabularOrderDto> getAll(int page, int size) {
         try{
-            List<Order> orders = orderRepository.getAll(page, size);
-            List<TabularOrderDTO> dtoList = orders.stream()
-                    .map(order -> tabularOrderConverter.entityToDtoConverter(order))
+            List<Order> orders = orderRepository.getAll(page*10, size);
+            List<TabularOrderDto> dtoList = orders.stream()
+                    .map(order -> tabularOrderMapper.entityToDto(order))
                     .collect(Collectors.toList());
             return dtoList;
         } catch (EmptyResultDataAccessException ex){
@@ -69,10 +68,10 @@ public class OrderService {
         }
     }
 
-    public TabularOrderDTO getById(long id) {
+    public TabularOrderDto getById(long id) {
         Optional<Order> orderOptional = orderRepository.getById(id);
         if (orderOptional.isPresent()){
-            TabularOrderDTO tabularOrderDTO = tabularOrderConverter.entityToDtoConverter(orderOptional.get());
+            TabularOrderDto tabularOrderDTO = tabularOrderMapper.entityToDto(orderOptional.get());
             return tabularOrderDTO;
         } else{
             throw new NoSuchDataException("There is no order with id = " + id);
@@ -85,10 +84,10 @@ public class OrderService {
         orderRepository.deleteById(id);
     }
 
-    public List<TabularOrderDTO> getUserReservations(long userId) {
+    public List<TabularOrderDto> getUserReservations(long userId) {
         List<Order> reservations = orderRepository.getUserReservations(userId);
         return reservations.stream()
-                .map(r -> tabularOrderConverter.entityToDtoConverter(r))
+                .map(r -> tabularOrderMapper.entityToDto(r))
                 .collect(Collectors.toList());
     }
 }

@@ -1,10 +1,10 @@
 package com.chern.controller;
 
-import com.chern.dto.NewQuestDTO;
+import com.chern.dto.NewQuestDto;
 import com.chern.dto.QuestFilterDto;
-import com.chern.dto.TabularQuestDTO;
+import com.chern.dto.TabularQuestDto;
 import com.chern.dto.UpdateQuestDto;
-import com.chern.dto.converter.Converter;
+import com.chern.dto.converter.Mapper;
 import com.chern.model.Quest;
 import com.chern.service.QuestService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class QuestRESTController {
     @Autowired
     private QuestService questService;
     @Autowired
-    private Converter<NewQuestDTO, Quest> newQuestConverter;
+    private Mapper<NewQuestDto, Quest> newQuestMapper;
 
     @PreAuthorize("hasAnyAuthority('ROLE_GUEST', 'ROLE_USER', 'ROLE_OWNER')")
     @GetMapping(value = "/quests/{id}")
@@ -35,15 +35,15 @@ public class QuestRESTController {
     @GetMapping(value = "/quests")
     public ResponseEntity getAll(@RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "10") int size) {
-        List<TabularQuestDTO> quests = questService.getAll(page, size);
+        List<TabularQuestDto> quests = questService.getAll(page, size);
         return ResponseEntity.ok().body(quests);
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
     @PostMapping(path = "/quests", consumes = MediaType.APPLICATION_JSON_VALUE
             , produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity save(@RequestBody NewQuestDTO quest) {
-        Quest saveQuest = questService.save(newQuestConverter.dtoToEntityConverter(quest));
+    public ResponseEntity save(@RequestBody NewQuestDto quest) {
+        Quest saveQuest = questService.save(newQuestMapper.dtoToEntity(quest));
         return ResponseEntity.status(HttpStatus.CREATED).body(saveQuest);
     }
 
@@ -71,7 +71,7 @@ public class QuestRESTController {
     @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_OWNER')")
     @GetMapping(value = "/quests/search/by/several-tags")
     public ResponseEntity search(@RequestParam List<Long> tagIds) {
-        List<TabularQuestDTO> quests = questService.searchBySeveralTags(tagIds);
+        List<TabularQuestDto> quests = questService.searchBySeveralTags(tagIds);
         return ResponseEntity.ok(quests);
     }
 
@@ -80,7 +80,7 @@ public class QuestRESTController {
     public ResponseEntity search(QuestFilterDto questFilterDto,
                                  @RequestParam(defaultValue = "0", required = false) int page,
                                  @RequestParam(defaultValue = "10", required = false) int size) {
-        List<TabularQuestDTO> quests = questService.searchBy(questFilterDto, page, size);
+        List<TabularQuestDto> quests = questService.searchBy(questFilterDto, page, size);
         return ResponseEntity.ok(quests);
     }
 }

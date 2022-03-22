@@ -1,7 +1,8 @@
 package com.chern.dto.converter;
 
-import com.chern.dto.TagDTO;
+import com.chern.dto.TagDto;
 import com.chern.dto.UpdateQuestDto;
+import com.chern.exception.FeatureNotRealisedException;
 import com.chern.model.Quest;
 import com.chern.model.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,21 +12,21 @@ import java.time.LocalDate;
 import java.util.stream.Collectors;
 
 @Component
-public class UpdateQuestConverter implements Converter<UpdateQuestDto, Quest> {
+public class UpdateQuestMapper implements Mapper<UpdateQuestDto, Quest> {
 
     @Autowired
-    private Converter<TagDTO, Tag> tagConverter;
+    private Mapper<TagDto, Tag> tagMapper;
 
     @Override
-    public UpdateQuestDto entityToDtoConverter(Quest entity) {
-        return null;
+    public UpdateQuestDto entityToDto(Quest entity) {
+        throw new FeatureNotRealisedException("Feature not realized");
     }
 
     @Override
-    public Quest dtoToEntityConverter(UpdateQuestDto dto) {
+    public Quest dtoToEntity(UpdateQuestDto dto) {
         return Quest.builder()
                 .tags(dto.getTags().stream()
-                        .map(t -> tagConverter.dtoToEntityConverter(t))
+                        .map(t -> tagMapper.dtoToEntity(t))
                         .collect(Collectors.toList()))
                 .maxPeople(dto.getMaxPeople())
                 .duration(dto.getDuration())

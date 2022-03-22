@@ -5,12 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TagDTO {
+public class NewOrderDto {
 
-    private long id;
-    private String name;
+    private long questId;
+    private LocalDateTime reservationTime;
 }

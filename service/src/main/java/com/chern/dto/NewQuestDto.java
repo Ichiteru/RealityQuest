@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class NewQuestDTO {
+public class NewQuestDto {
 
     private String name;
     private String description;
@@ -20,6 +20,6 @@ public class NewQuestDTO {
     private double price;
     private LocalTime duration;
     private int maxPeople;
-    private List<TagDTO> tags;
+    private List<TagDto> tags;
 
 }

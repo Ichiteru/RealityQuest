@@ -1,13 +1,9 @@
 package com.chern.dto;
 
-import com.chern.model.Order;
-import com.chern.model.Tag;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -22,5 +18,5 @@ public class UpdateQuestDto {
     private double price;
     private LocalTime duration;
     private int maxPeople;
-    private List<TagDTO> tags;
+    private List<TagDto> tags;
 }

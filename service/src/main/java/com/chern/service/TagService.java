@@ -1,21 +1,17 @@
 package com.chern.service;
 
-import com.chern.dto.TagDTO;
-import com.chern.dto.converter.Converter;
+import com.chern.dto.TagDto;
+import com.chern.dto.converter.Mapper;
 import com.chern.model.Tag;
 import com.chern.repo.TagRepository;
 import com.chern.exception.DuplicateFieldException;
 import com.chern.exception.NoSuchDataException;
 import com.chern.validation.Validator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,22 +22,22 @@ public class TagService {
 
     private final TagRepository tagRepository;
     private final Validator<Tag> tagValidator;
-    private final Converter<TagDTO, Tag> tagConverter;
+    private final Mapper<TagDto, Tag> tagMapper;
 
-    public TagDTO getById(long id) {
+    public TagDto getById(long id) {
         try {
             Tag byId = tagRepository.getById(id);
-            return tagConverter.entityToDtoConverter(byId);
+            return tagMapper.entityToDto(byId);
         } catch (EmptyResultDataAccessException exception){
             throw new NoSuchDataException("There is no tag with such id(" + id + ")");
         }
     }
 
-    public List<TagDTO> getAll(int page, int size) {
+    public List<TagDto> getAll(int page, int size) {
         try {
-            List<Tag> tags = tagRepository.getAll(page, size);
-            List<TagDTO> dtos = tags.stream()
-                    .map(tag -> tagConverter.entityToDtoConverter(tag))
+            List<Tag> tags = tagRepository.getAll(page*10, size);
+            List<TagDto> dtos = tags.stream()
+                    .map(tag -> tagMapper.entityToDto(tag))
                     .collect(Collectors.toList());
             return dtos;
         } catch (EmptyResultDataAccessException exception){
@@ -50,14 +46,14 @@ public class TagService {
     }
 
     @Transactional
-    public List<TagDTO> save(List<Tag> tags) throws DuplicateFieldException {
+    public List<TagDto> save(List<Tag> tags) throws DuplicateFieldException {
         tags.forEach(tag -> tagValidator.validate(tag));
         if (!tagRepository.getByNames(tags.stream().map(Tag::getName).collect(Collectors.toList())).isEmpty()){
             throw new DuplicateFieldException("Tag with some of this names already exists");
         }
         List<Tag> save = tagRepository.save(tags);
         return  save.stream()
-                .map(t -> tagConverter.entityToDtoConverter(t))
+                .map(t -> tagMapper.entityToDto(t))
                 .collect(Collectors.toList());
     }
 
@@ -75,7 +71,7 @@ public class TagService {
         return tagRepository.delete(ids);
     }
 
-    public TagDTO getMostUsedTag(){
-        return tagConverter.entityToDtoConverter(tagRepository.findMostUsedOfTopUser());
+    public TagDto getMostUsedTag(){
+        return tagMapper.entityToDto(tagRepository.findMostUsedOfTopUser());
     }
 }

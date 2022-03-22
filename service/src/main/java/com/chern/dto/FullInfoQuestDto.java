@@ -1,6 +1,5 @@
 package com.chern.dto;
 
-import com.chern.model.Tag;
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,7 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class FullInfoQuestDTO {
+public class FullInfoQuestDto {
 
     private long id;
     private String name;
@@ -21,5 +20,5 @@ public class FullInfoQuestDTO {
     private LocalDate creationDate;
     private LocalDate modificationDate;
     private int maxPeople;
-    private List<TagDTO> tags;
+    private List<TagDto> tags;
 }

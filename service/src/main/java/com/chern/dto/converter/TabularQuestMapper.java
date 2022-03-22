@@ -1,15 +1,16 @@
 package com.chern.dto.converter;
 
-import com.chern.dto.TabularQuestDTO;
+import com.chern.dto.TabularQuestDto;
+import com.chern.exception.FeatureNotRealisedException;
 import com.chern.model.Quest;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TabularQuestConverter implements Converter<TabularQuestDTO, Quest> {
+public class TabularQuestMapper implements Mapper<TabularQuestDto, Quest> {
 
     @Override
-    public TabularQuestDTO entityToDtoConverter(Quest entity) {
-        return TabularQuestDTO.builder()
+    public TabularQuestDto entityToDto(Quest entity) {
+        return TabularQuestDto.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .duration(entity.getDuration())
@@ -20,7 +21,7 @@ public class TabularQuestConverter implements Converter<TabularQuestDTO, Quest> 
     }
 
     @Override
-    public Quest dtoToEntityConverter(TabularQuestDTO entity) {
-        return null;
+    public Quest dtoToEntity(TabularQuestDto dto) {
+        throw new FeatureNotRealisedException("Feature not realized");
     }
 }

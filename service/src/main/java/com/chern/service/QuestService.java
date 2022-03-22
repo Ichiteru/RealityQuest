@@ -1,8 +1,7 @@
 package com.chern.service;
 
 import com.chern.dto.*;
-import com.chern.dto.converter.Converter;
-import com.chern.dto.converter.TabularQuestConverter;
+import com.chern.dto.converter.Mapper;
 import com.chern.exception.DuplicateFieldException;
 import com.chern.exception.NoSuchDataException;
 import com.chern.filter.QuestFilter;
@@ -12,7 +11,6 @@ import com.chern.repo.QuestRepository;
 import com.chern.repo.TagRepository;
 import com.chern.validation.Validator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,27 +29,27 @@ public class QuestService {
     private final TagRepository tagRepository;
     private final Validator<Quest> questValidator;
     private final Validator<Tag> tagValidator;
-    private final Converter<TabularQuestDTO, Quest> tabularQuestConverter;
-    private final Converter<FullInfoQuestDTO, Quest> infoQuestConverter;
-    private final Converter<QuestFilterDto, QuestFilter> filterConverter;
-    private final Converter<UpdateQuestDto, Quest> updateQuestConverter;
+    private final Mapper<TabularQuestDto, Quest> tabularQuestMapper;
+    private final Mapper<FullInfoQuestDto, Quest> infoQuestMapper;
+    private final Mapper<QuestFilterDto, QuestFilter> filterMapper;
+    private final Mapper<UpdateQuestDto, Quest> updateQuestMapper;
 
-    public FullInfoQuestDTO getById(long id) {
+    public FullInfoQuestDto getById(long id) {
         try {
             Quest quest = questRepository.getById(id);
-            FullInfoQuestDTO fullInfoQuestDTO = infoQuestConverter.entityToDtoConverter(quest);
+            FullInfoQuestDto fullInfoQuestDTO = infoQuestMapper.entityToDto(quest);
             return fullInfoQuestDTO;
         } catch (EmptyResultDataAccessException ex) {
             throw new NoSuchDataException("This quest doesn't exist");
         }
     }
 
-    public List<TabularQuestDTO> getAll(int page, int size) {
+    public List<TabularQuestDto> getAll(int page, int size) {
         try {
-            List<Quest> quests = questRepository.getAll(page, size);
-            List<TabularQuestDTO> tabularQuests =
+            List<Quest> quests = questRepository.getAll(page*10, size);
+            List<TabularQuestDto> tabularQuests =
                     quests.stream()
-                            .map(quest -> tabularQuestConverter.entityToDtoConverter(quest))
+                            .map(quest -> tabularQuestMapper.entityToDto(quest))
                             .collect(Collectors.toList());
             return tabularQuests;
         } catch (EmptyResultDataAccessException ex) {
@@ -88,7 +86,7 @@ public class QuestService {
         if (!questRepository.existsById(questDto.getId())) {
             throw new NoSuchDataException("There is no quest with this id(" + questDto.getId() + ")");
         }
-        Quest quest = updateQuestConverter.dtoToEntityConverter(questDto);
+        Quest quest = updateQuestMapper.dtoToEntity(questDto);
         questValidator.validate(quest);
         if(questRepository.existsByName(quest.getName())){
             throw new DuplicateFieldException("Quest with name '" + quest.getName() + "' already exists");
@@ -127,21 +125,21 @@ public class QuestService {
         return questRepository.delete(ids);
     }
 
-    public List<TabularQuestDTO> searchBySeveralTags(List<Long> tagIds) {
+    public List<TabularQuestDto> searchBySeveralTags(List<Long> tagIds) {
         List<Quest> quests = questRepository.searchBySeveralTags(tagIds);
-        List<TabularQuestDTO> dtos = quests.stream()
-                .map(q -> tabularQuestConverter.entityToDtoConverter(q))
+        List<TabularQuestDto> dtos = quests.stream()
+                .map(q -> tabularQuestMapper.entityToDto(q))
                 .collect(Collectors.toList());
         return dtos;
     }
 
-    public List<TabularQuestDTO> searchBy(QuestFilterDto questFilterDto, int page, int size) {
-        QuestFilter questFilter = filterConverter.dtoToEntityConverter(questFilterDto);
+    public List<TabularQuestDto> searchBy(QuestFilterDto questFilterDto, int page, int size) {
+        QuestFilter questFilter = filterMapper.dtoToEntity(questFilterDto);
         List<Tag> tags = tagRepository.getByNames(questFilterDto.getTags());
         questFilter.setTags(tags);
         List<Quest> quests = questRepository
-                .findByFilter(questFilter, page, size);
-        return quests.stream().map(q -> tabularQuestConverter.entityToDtoConverter(q))
+                .findByFilter(questFilter, page*10, size);
+        return quests.stream().map(q -> tabularQuestMapper.entityToDto(q))
                 .collect(Collectors.toList());
     }
 

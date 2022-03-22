@@ -1,14 +1,15 @@
 package com.chern.dto.converter;
 
-import com.chern.dto.TabularOrderDTO;
+import com.chern.dto.TabularOrderDto;
+import com.chern.exception.FeatureNotRealisedException;
 import com.chern.model.Order;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TabularOrderConverter implements Converter<TabularOrderDTO, Order> {
+public class TabularOrderMapper implements Mapper<TabularOrderDto, Order> {
     @Override
-    public TabularOrderDTO entityToDtoConverter(Order entity) {
-        return TabularOrderDTO.builder()
+    public TabularOrderDto entityToDto(Order entity) {
+        return TabularOrderDto.builder()
                 .id(entity.getId())
                 .cost(entity.getCost())
                 .customer(entity.getUser().getUsername())
@@ -20,7 +21,7 @@ public class TabularOrderConverter implements Converter<TabularOrderDTO, Order> 
     }
 
     @Override
-    public Order dtoToEntityConverter(TabularOrderDTO entity) {
-        return null;
+    public Order dtoToEntity(TabularOrderDto dto) {
+        throw new FeatureNotRealisedException("Feature not realized");
     }
 }
