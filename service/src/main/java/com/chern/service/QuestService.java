@@ -76,6 +76,14 @@ public class QuestService {
     }
 
     @Transactional
+    public Quest saveGeneratedData(Quest quest)  throws DuplicateFieldException{
+        List<Tag> tags = quest.getTags();
+        tagRepository.save(tags);
+        quest = questRepository.save(quest);
+        return quest;
+    }
+
+    @Transactional
     public Quest update(UpdateQuestDto questDto) throws DuplicateFieldException{
         if (!questRepository.existsById(questDto.getId())) {
             throw new NoSuchDataException("There is no quest with this id(" + questDto.getId() + ")");

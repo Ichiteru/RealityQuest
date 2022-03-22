@@ -18,8 +18,5 @@ public class ApiError {
         this.error = error;
     }
 
-//    public ApiError(String error) {
-//        this.error = error;
-//    }
 }
 

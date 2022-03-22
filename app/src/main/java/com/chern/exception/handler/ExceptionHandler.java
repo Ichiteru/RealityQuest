@@ -1,8 +1,6 @@
 package com.chern.exception.handler;
 
 import com.chern.exception.*;
-import liquibase.pro.packaged.E;
-import org.keycloak.common.VerificationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
