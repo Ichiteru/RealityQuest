@@ -79,4 +79,16 @@ public class OrderService {
         }
 
     }
+
+    @Transactional
+    public void deleteById(long id) {
+        orderRepository.deleteById(id);
+    }
+
+    public List<TabularOrderDTO> getUserReservations(long userId) {
+        List<Order> reservations = orderRepository.getUserReservations(userId);
+        return reservations.stream()
+                .map(r -> tabularOrderConverter.entityToDtoConverter(r))
+                .collect(Collectors.toList());
+    }
 }

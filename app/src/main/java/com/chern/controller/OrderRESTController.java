@@ -47,4 +47,18 @@ public class OrderRESTController {
     public ResponseEntity getById(@PathVariable long id){
         return ResponseEntity.ok(orderService.getById(id));
     }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER', 'ROLE_USER')")
+    @GetMapping("/orders/user/{userId}")
+    public ResponseEntity getUserReservations(@PathVariable long userId){
+        List<TabularOrderDTO> reservations = orderService.getUserReservations(userId);
+        return ResponseEntity.ok(reservations);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
+    @DeleteMapping("/orders/{id}")
+    public ResponseEntity deleteById(@PathVariable long id){
+        orderService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

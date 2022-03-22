@@ -2,6 +2,7 @@ package com.chern.repo;
 
 import com.chern.model.Order;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -62,6 +63,26 @@ public class OrderRepositoryCriteria implements OrderRepository {
         TypedQuery<Order> result = entityManager.createQuery(mainSelect);
         List<Order> resultList = result.getResultList();
         return resultList.isEmpty() ? false : true;
+    }
+
+    @Override
+    public void deleteById(long id){
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaDelete<Order> criteriaDelete = criteriaBuilder.createCriteriaDelete(Order.class);
+        Root<Order> from = criteriaDelete.from(Order.class);
+        CriteriaDelete<Order> delete = criteriaDelete.where(criteriaBuilder.equal(from.get("id"), id));
+        entityManager.createQuery(delete).executeUpdate();
+    }
+
+    @Override
+    public List<Order> getUserReservations(long userId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Order> query = criteriaBuilder.createQuery(Order.class);
+        Root<Order> from = query.from(Order.class);
+        CriteriaQuery<Order> result = query.select(from)
+                .where(criteriaBuilder.equal(from.get("user").get("id"), userId));
+        List<Order> resultList = entityManager.createQuery(result).getResultList();
+        return resultList;
     }
 
 }

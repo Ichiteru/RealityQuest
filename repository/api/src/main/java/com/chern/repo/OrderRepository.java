@@ -13,4 +13,8 @@ public interface OrderRepository {
     List<Order> getAll(int page, int size);
     Optional<Order> getById(long id);
     boolean isReservedAtThisTime(LocalDateTime time);
+
+    void deleteById(long id);
+
+    List<Order> getUserReservations(long userId);
 }
