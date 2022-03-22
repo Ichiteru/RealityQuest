@@ -25,9 +25,9 @@ public class DataGeneratorController {
 
     @Autowired
     private RestTemplate restTemplate;
-    private static final String URL = "https://random-word-api.herokuapp.com/word?number=4000";
     @Autowired
     private QuestService questService;
+    private static final String URL = "https://random-word-api.herokuapp.com/word?number=4000";
 
     @Transactional
     @PreAuthorize("hasAnyAuthority('ROLE_OWNER')")
@@ -53,7 +53,7 @@ public class DataGeneratorController {
                     .build();
             quests.add(quest);
         }
-        List<Quest> collect = quests.stream().peek(quest -> questService.save(quest)).collect(Collectors.toList());
+        List<Quest> collect = quests.stream().peek(quest -> questService.saveGeneratedData(quest)).collect(Collectors.toList());
         System.out.println(collect);
     }
 
